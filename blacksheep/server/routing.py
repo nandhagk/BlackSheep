@@ -366,7 +366,11 @@ class Route:
 
         if raw_pattern == b"":
             raw_pattern = b"/"
-        if len(raw_pattern) > 1 and raw_pattern.endswith(b"/"):
+        if (
+            len(raw_pattern) > 1
+            and not isinstance(raw_pattern, memoryview)
+            and raw_pattern.endswith(b"/")
+        ):
             raw_pattern = raw_pattern.rstrip(b"/")
 
         return raw_pattern
@@ -399,7 +403,7 @@ class Route:
         return self._rx.pattern
 
     def match(self, request: Request) -> Optional[RouteMatch]:
-        return self.match_by_path(ensure_bytes(request._path))
+        return self.match_by_path(ensure_bytes(request._path))  # type: ignore ()
 
     def match_by_path(self, path: bytes) -> Optional[RouteMatch]:
         """
@@ -801,7 +805,7 @@ class Router(RouterBase):
         """
         Gets a match for the given request, by method and request path.
         """
-        return self.get_match_by_method_and_path(request.method, request._path)
+        return self.get_match_by_method_and_path(request.method, request._path)  # type: ignore ()
 
     @lru_cache(maxsize=1200)
     def get_match_by_method_and_path(

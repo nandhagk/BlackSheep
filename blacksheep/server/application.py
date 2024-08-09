@@ -227,7 +227,7 @@ class Application(BaseApplication):
         secret_key: str,
         *,
         session_cookie: str = "session",
-        serializer: Optional[SessionSerializer] = None,
+        serializer: SessionSerializer,
         signer: Optional[Serializer] = None,
         session_max_age: Optional[int] = None,
     ) -> None:

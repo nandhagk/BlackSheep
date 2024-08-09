@@ -28,7 +28,6 @@ dependencies = [
     "charset-normalizer~=3.1.0",
     "guardpost>=1.0.2",
     "rodi~=2.0.2",
-    "python-dateutil~=2.8.2",
     "itsdangerous~=2.1.2",
 ]
 

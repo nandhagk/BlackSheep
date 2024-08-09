@@ -142,7 +142,9 @@ class WebSocket(Request):
         await self._send_message({"type": "websocket.send", "text": data})
 
     async def send_bytes(self, data: bytes) -> None:
-        await self._send_message({"type": "websocket.send", "bytes": data})
+        await self._send_message(
+            {"type": "websocket.send", "bytes": data}  # type: ignore ()
+        )
 
     def _wrap_receive(self, _receive: Callable):
         @wraps(_receive)

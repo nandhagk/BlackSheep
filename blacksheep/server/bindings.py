@@ -11,7 +11,6 @@ See:
 from abc import abstractmethod
 from base64 import urlsafe_b64decode
 from collections.abc import Iterable as IterableAbc
-from datetime import date, datetime
 from typing import (
     Any,
     Callable,
@@ -30,7 +29,6 @@ from typing import (
 from urllib.parse import unquote
 from uuid import UUID
 
-from dateutil.parser import parse as dateutil_parser
 from guardpost import Identity
 from rodi import CannotResolveTypeException, ContainerProtocol
 
@@ -403,7 +401,7 @@ class BodyBinder(Binder):
 
     def __init__(
         self,
-        expected_type,
+        expected_type: object = str,
         name: str = "body",
         implicit: bool = False,
         required: bool = False,
@@ -420,12 +418,6 @@ class BodyBinder(Binder):
         # for example in JSON can be int, float, bool
         if expected_type in {str, int, float, bool} or str(expected_type) == "~T":
             return lambda value: value
-
-        if expected_type is date:
-            return lambda value: dateutil_parser(value).date() if value else None
-
-        if expected_type is datetime:
-            return lambda value: dateutil_parser(value) if value else None
 
         if expected_type is bytes:
             # note: the code is optimized for strings here, not bytes
@@ -487,7 +479,7 @@ class BodyBinder(Binder):
     async def read_data(self, request: Request) -> Any:
         raise NotImplementedError()
 
-    async def get_value(self, request: Request) -> Optional[T]:
+    async def get_value(self, request: Request) -> object:
         if request.method not in self._excluded_methods and self.matches_content_type(
             request
         ):
@@ -610,14 +602,6 @@ class SyncBinder(Binder):
         if expected_type is UUID:
             return lambda value: UUID(value)
 
-        if expected_type is datetime:
-            return lambda value: dateutil_parser(unquote(value)) if value else None
-
-        if expected_type is date:
-            return lambda value: (
-                dateutil_parser(unquote(value)).date() if value else None
-            )
-
         raise MissingConverterError(expected_type, self.__class__)
 
     def _get_default_converter_for_iterable(self, expected_type):
@@ -649,14 +633,6 @@ class SyncBinder(Binder):
         }:
             return self._get_default_converter_for_iterable(expected_type)
 
-        if expected_type is datetime:
-            return lambda value: dateutil_parser(unquote(value[0])) if value else None
-
-        if expected_type is date:
-            return lambda value: (
-                dateutil_parser(unquote(value[0])).date() if value else None
-            )
-
         raise MissingConverterError(expected_type, self.__class__)
 
     @abstractmethod
@@ -678,7 +654,10 @@ class SyncBinder(Binder):
         # when a parameter is not present
         raw_value = self.get_raw_value(request)
         try:
-            value = self.converter(raw_value)
+            converter = self.converter
+            assert converter is not None
+
+            value = converter(raw_value)
         except (ValueError, BadRequest) as converter_error:
             raise BadRequest(
                 f"Invalid value {raw_value} for parameter `{self.parameter_name}`; "
@@ -741,7 +720,7 @@ class RouteBinder(SyncBinder):
 
     def __init__(
         self,
-        expected_type: T = str,
+        expected_type: object,
         name: str | None = None,
         implicit: bool = False,
         required: bool = True,
@@ -844,7 +823,7 @@ class ServerInfoBinder(Binder):
     handle = ServerInfo
 
     async def get_value(self, request: Request) -> Tuple[str, int]:
-        return tuple(request.scope["server"])
+        return tuple(request.scope["server"])  # type: ignore ()
 
 
 class RequestURLBinder(Binder):

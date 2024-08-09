@@ -316,10 +316,6 @@ def _get_parameter_binder(
     method: Callable[..., Any],
 ) -> Binder:
     name = parameter.name
-
-    if name in Binder.aliases:
-        return Binder.aliases[name](services)
-
     original_annotation = parameter.annotation
 
     if original_annotation is _empty:

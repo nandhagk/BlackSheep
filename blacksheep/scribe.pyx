@@ -364,30 +364,3 @@ async def send_asgi_response(Response response, object send):
 
 
 _NEW_LINES_RX = re.compile("\r\n|\n")
-
-
-cpdef bytes write_sse(ServerSentEvent event):
-    """
-    Writes a ServerSentEvent object to bytes.
-    """
-    cdef bytearray value = bytearray()
-
-    if event.id:
-        value.extend(b"id: " + _NEW_LINES_RX.sub("", event.id).encode("utf8") + b"\r\n")
-
-    if event.comment:
-        for part in _NEW_LINES_RX.split(event.comment):
-            value.extend(b": " + part.encode("utf8") + b"\r\n")
-
-    if event.event:
-        value.extend(b"event: " + _NEW_LINES_RX.sub("", event.event).encode("utf8") + b"\r\n")
-
-    # if event.data:
-    #     json_data = json_settings.dumps(event.data)
-    #     value.extend(b"data: " + json_data.encode("utf8") + b"\r\n")
-
-    if event.retry > -1:
-        value.extend(b"retry: " + str(event.retry).encode() + b"\r\n")
-
-    value.extend(b"\r\n")
-    return bytes(value)

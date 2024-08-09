@@ -132,7 +132,7 @@ def get_response_for_resource_path(
             return get_files_list_html_response(
                 files_list_html,
                 tail.rstrip("/"),
-                list(get_files_to_serve(Path(resource_path.rstrip("/")), extensions)),
+                list(get_files_to_serve(Path(resource_path.rstrip("/")), extensions)),  # type: ignore ()
                 root_path,
             )
         else:
