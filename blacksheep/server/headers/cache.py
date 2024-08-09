@@ -8,7 +8,6 @@ from functools import wraps
 from typing import Optional
 
 from blacksheep import Request, Response
-from blacksheep.server.normalization import ensure_response
 
 
 def write_cache_control_response_header(
@@ -257,7 +256,7 @@ def cache_control(
 
             @wraps(next_handler)
             async def async_wrapped(*args, **kwargs):
-                response = ensure_response(await next_handler(*args, **kwargs))
+                response = await next_handler(*args, **kwargs)
                 response.add_header(b"cache-control", header_value)
                 return response
 
@@ -266,7 +265,7 @@ def cache_control(
 
             @wraps(next_handler)
             def wrapped(*args, **kwargs):
-                response = ensure_response(next_handler(*args, **kwargs))
+                response = next_handler(*args, **kwargs)
                 response.add_header(b"cache-control", header_value)
                 return response
 
