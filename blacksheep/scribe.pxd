@@ -28,5 +28,3 @@ cdef bytes write_small_response(Response response)
 cdef void set_headers_for_content(Message message)
 
 cdef void set_headers_for_response_content(Response message)
-
-cpdef bytes write_sse(ServerSentEvent event)
