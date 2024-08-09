@@ -304,10 +304,6 @@ class APIDocsHandler(Generic[OpenAPIRootType], ABC):
         if docs and docs.tags:
             return docs.tags
 
-        if hasattr(handler, "controller_type"):
-            # default to controller's class name for the tags
-            return [handler.controller_type.class_name().title()]
-
         return None
 
     def is_deprecated(self, handler: Any) -> Optional[bool]:

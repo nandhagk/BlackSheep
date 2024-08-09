@@ -33,7 +33,6 @@ from .bindings import (
     Binder,
     BodyBinder,
     BoundValue,
-    ControllerBinder,
     IdentityBinder,
     JSONBinder,
     QueryBinder,
@@ -486,69 +485,6 @@ def get_binders_for_middleware(
     return _get_binders_for_function(method, services, None)
 
 
-def _get_sync_wrapper_for_controller(
-    binders: Sequence[Binder], method: Callable[..., Any]
-) -> Callable[[Request], Awaitable[Response]]:
-    @wraps(method)
-    async def handler(request):
-        values = []
-        controller = await binders[0].get_value(request)
-        await controller.on_request(request)
-
-        values.append(controller)
-
-        for binder in binders[1:]:
-            values.append(await binder.get_parameter(request))
-
-        response = method(*values)
-        await controller.on_response(response)
-        return response
-
-    return handler
-
-
-def _get_async_wrapper_for_controller(
-    binders: Sequence[Binder], method: Callable[..., Any]
-) -> Callable[[Request], Awaitable[Response]]:
-    @wraps(method)
-    async def handler(request):
-        values = []
-        controller = await binders[0].get_value(request)
-        await controller.on_request(request)
-
-        values.append(controller)
-
-        for binder in binders[1:]:
-            values.append(await binder.get_parameter(request))
-
-        response = await method(*values)
-        await controller.on_response(response)
-        return response
-
-    return handler
-
-
-def _get_async_wrapper_for_controller_asyncgen(
-    response_type, binders: Sequence[Binder], method: Callable[..., Any]
-) -> Callable[[Request], Awaitable[Response]]:
-    @wraps(method)
-    async def handler(request):
-        values = []
-        controller = await binders[0].get_value(request)
-        await controller.on_request(request)
-
-        values.append(controller)
-
-        for binder in binders[1:]:
-            values.append(await binder.get_parameter(request))
-
-        response = response_type(partial(method, *values))
-        await controller.on_response(response)
-        return response
-
-    return handler
-
-
 def get_sync_wrapper(
     services: ContainerProtocol,
     route: Route,
@@ -558,22 +494,19 @@ def get_sync_wrapper(
 ) -> Callable[[Request], Awaitable[Response]]:
     if params_len == 0:
         # the user defined a synchronous request handler with no input
-        async def handler(_):
+        async def hdlr(_):
             return method()
 
-        return handler
+        return hdlr
 
     if params_len == 1 and "request" in params:
 
-        async def handler(request):
+        async def hdlr(request):
             return method(request)
 
-        return handler
+        return hdlr
 
     binders = get_binders(route, services)
-
-    if isinstance(binders[0], ControllerBinder):
-        return _get_sync_wrapper_for_controller(binders, method)
 
     @wraps(method)
     async def handler(request):
@@ -613,9 +546,6 @@ def get_async_wrapper(
             return method
 
     binders = get_binders(route, services)
-
-    if isinstance(binders[0], ControllerBinder):
-        return _get_async_wrapper_for_controller(binders, method)
 
     @wraps(method)
     async def handler(request):
@@ -660,11 +590,6 @@ def get_async_wrapper_for_asyncgen(
             return normal_sse_handler
 
     binders = get_binders(route, services)
-
-    if isinstance(binders[0], ControllerBinder):
-        return _get_async_wrapper_for_controller_asyncgen(
-            response_type, binders, method
-        )
 
     @wraps(method)
     async def handler(request):

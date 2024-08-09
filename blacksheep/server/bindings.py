@@ -774,7 +774,7 @@ class RouteBinder(SyncBinder):
     def __init__(
         self,
         expected_type: T = str,
-        name: str = None,
+        name: str | None = None,
         implicit: bool = False,
         required: bool = True,
         converter: Optional[Callable] = None,
@@ -782,7 +782,10 @@ class RouteBinder(SyncBinder):
         super().__init__(expected_type, name or "route", implicit, required, converter)
 
     def get_raw_value(self, request: Request) -> Sequence[str]:
-        return [request.route_values.get(self.parameter_name, "")]
+        route_values = request.route_values
+        assert route_values is not None
+
+        return [route_values.get(self.parameter_name, "")]
 
     @property
     def source_name(self) -> str:
@@ -814,29 +817,6 @@ class ServiceBinder(Binder):
             return self.services.resolve(self.expected_type, scope)
         except CannotResolveTypeException:
             return None
-
-
-class ControllerParameter(BoundValue[T]):
-    pass
-
-
-class ControllerBinder(ServiceBinder):
-    """
-    Binder used to activate an instance of Controller. This binder is applied
-    automatically by the application
-    object at startup, as type annotation, for handlers configured on classes
-    inheriting `blacksheep.server.Controller`.
-
-    If used manually, it causes several controllers to be instantiated and
-    injected into request handlers.
-    However, only the controller configured as `self` is taken into
-    consideration for base route and callbacks.
-    """
-
-    handle = ControllerParameter
-
-    async def get_value(self, request: Request) -> Optional[T]:
-        return await super().get_value(request)
 
 
 class RequestBinder(Binder):
@@ -889,7 +869,7 @@ class ClientInfoBinder(Binder):
     handle = ClientInfo
 
     async def get_value(self, request: Request) -> Tuple[str, int]:
-        return tuple(request.scope["client"])
+        return tuple(request.scope["client"])  # type: ignore ()
 
 
 class ServerInfoBinder(Binder):

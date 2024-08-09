@@ -641,7 +641,6 @@ RouteConfig = Union[Dict[str, Any], "Router"]
 class Router(RouterBase):
     __slots__ = (
         "routes",
-        "controllers_routes",
         "_map",
         "_fallback",
         "_sub_routers",
@@ -667,7 +666,6 @@ class Router(RouterBase):
         self._map = {}
         self._fallback = None
         self.routes: Dict[bytes, List[Route]] = defaultdict(list)
-        self.controllers_routes = RoutesRegistry()
         self._sub_routers = sub_routers
 
         if self._filters:
@@ -681,7 +679,6 @@ class Router(RouterBase):
         self._map = {}
         self._fallback = None
         self.routes = defaultdict(list)
-        self.controllers_routes.reset()
         if self._sub_routers:
             for sub_router in self._sub_routers:
                 sub_router.reset()
@@ -987,7 +984,6 @@ def validate_default_router():
 # Application and Router (the same approach can be easily used for more complex use
 # cases where more than one router is used).
 router = Router()
-controllers_routes = router.controllers_routes
 
 head = router.head
 get = router.get

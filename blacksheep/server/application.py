@@ -26,16 +26,14 @@ from guardpost import (
 from guardpost.authorization import ForbiddenError
 from guardpost.common import AuthenticatedRequirement
 from itsdangerous import Serializer
-from rodi import ContainerProtocol
+from rodi import Container
 
 from blacksheep.baseapp import BaseApplication, handle_not_found
-from blacksheep.common import extend
 from blacksheep.common.files.asyncfs import FilesHandler
 from blacksheep.contents import ASGIContent
 from blacksheep.messages import Request, Response
 from blacksheep.middlewares import get_middlewares_chain
 from blacksheep.scribe import send_asgi_response
-from blacksheep.server.asgi import get_request_url_from_scope
 from blacksheep.server.authentication import (
     AuthenticateChallenge,
     get_authentication_middleware,
@@ -47,29 +45,20 @@ from blacksheep.server.authorization import (
     handle_forbidden,
     handle_unauthorized,
 )
-from blacksheep.server.bindings import ControllerParameter
 from blacksheep.server.cors import CORSPolicy, CORSStrategy, get_cors_middleware
-from blacksheep.server.env import EnvironmentSettings
 from blacksheep.server.errors import ServerErrorDetailsHandler
 from blacksheep.server.files import DefaultFileOptions
 from blacksheep.server.files.dynamic import serve_files_dynamic
 from blacksheep.server.normalization import normalize_handler, normalize_middleware
-from blacksheep.server.process import use_shutdown_handler
-from blacksheep.server.responses import _ensure_bytes
 from blacksheep.server.routing import (
     MountRegistry,
-    RegisteredRoute,
     RouteMethod,
-    Router,
-    RoutesRegistry,
+    validate_default_router,
+    validate_router,
 )
 from blacksheep.server.routing import router as default_router
-from blacksheep.server.routing import validate_default_router, validate_router
 from blacksheep.server.websocket import WebSocket, format_reason
 from blacksheep.sessions import SessionMiddleware, SessionSerializer
-from blacksheep.settings.di import di_settings
-from blacksheep.utils import ensure_bytes, join_fragments
-from blacksheep.utils.meta import get_parent_file, import_child_modules
 
 
 def get_default_headers_middleware(
@@ -173,26 +162,14 @@ class Application(BaseApplication):
     Server application class.
     """
 
-    def __init__(
-        self,
-        *,
-        router: Optional[Router] = None,
-        services: Optional[ContainerProtocol] = None,
-        show_error_details: bool = False,
-        mount: Optional[MountRegistry] = None,
-    ):
-        env_settings = EnvironmentSettings()
-        if router is None:
-            router = default_router if env_settings.use_default_router else Router()
-        if services is None:
-            services = di_settings.get_default_container()
-        if mount is None:
-            mount = MountRegistry(env_settings.mount_auto_events)
+    def __init__(self, *, base_path: str):
+        router = default_router
+        services = Container()
+        mount = MountRegistry()
 
-        super().__init__(show_error_details or env_settings.show_error_details, router)
+        super().__init__(False, router)
 
-        assert services is not None
-        self._services: ContainerProtocol = services
+        self.services = services
         self.middlewares: List[Callable[..., Awaitable[Response]]] = []
         self._default_headers: Optional[Tuple[Tuple[str, str], ...]] = None
         self._middlewares_configured = False
@@ -207,33 +184,10 @@ class Application(BaseApplication):
         self.files_handler = FilesHandler()
         self.server_error_details_handler = ServerErrorDetailsHandler()
         self._session_middleware: Optional[SessionMiddleware] = None
-        self.base_path: str = ""
-        self._mount_registry = mount
+        self.base_path: str = base_path
+        self.mount_registry = mount
 
         validate_router(self)
-        parent_file = get_parent_file()
-
-        if parent_file:
-            _auto_import_controllers(parent_file)
-            _auto_import_routes(parent_file)
-
-        if env_settings.add_signal_handler:
-            use_shutdown_handler(self)
-
-    @property
-    def controllers_router(self) -> RoutesRegistry:
-        return self.router.controllers_routes
-
-    @controllers_router.setter
-    def controllers_router(self, value) -> None:
-        self.router.controllers_routes = value
-
-    @property
-    def services(self) -> ContainerProtocol:
-        """
-        Returns the object that provides services of this application.
-        """
-        return self._services
 
     @property
     def default_headers(self) -> Optional[Tuple[Tuple[str, str], ...]]:
@@ -251,43 +205,6 @@ class Application(BaseApplication):
                 + "Use `app.use_cors()` method before using this property."
             )
         return self._cors_strategy
-
-    @property
-    def mount_registry(self) -> MountRegistry:
-        return self._mount_registry
-
-    def mount(self, path: str, app: Callable) -> None:
-        """
-        Mounts an ASGI application at the given path. When a web request has a URL path
-        that starts with the mount path, it is handled by the mounted app (the mount
-        path is stripped from the final URL path received by the child application).
-
-        If the child application is a BlackSheep application, it requires handling of
-        its lifecycle events. This can be automatic, if the environment variable
-
-            APP_MOUNT_AUTO_EVENTS is missing or set to "1" or "true" (case insensitive)
-
-        or explicitly enabled, if the parent app's is configured this way:
-
-            parent_app.mount_registry.auto_events = True
-        """
-        if app is self:
-            raise TypeError("Cannot mount an application into itself")
-
-        self._mount_registry.mount(path, app)
-
-        if isinstance(app, Application):
-            app.base_path = (
-                join_fragments(self.base_path, path) if self.base_path else path
-            )
-
-            if self._mount_registry.auto_events:
-                self._bind_child_app_events(app)
-
-        if len(self._mount_registry.mounted_apps) == 1:
-            # the first time a mount is configured, extend the application
-            # to use mounts when handling web requests
-            self.extend(MountMixin)
 
     def _bind_child_app_events(self, app: "Application") -> None:
         @self.on_start
@@ -558,74 +475,6 @@ class Application(BaseApplication):
             for middleware in self.middlewares
         ]
 
-    def use_controllers(self):
-        # NB: controller types are collected here, and not with
-        # Controller.__subclasses__(),
-        # to avoid funny bugs in case several Application objects are defined
-        # with different controllers; this is the case for example of tests.
-
-        # This sophisticated approach, using metaclassing, dynamic
-        # attributes, and calling handlers dynamically
-        # with activated instances of controllers; still supports custom
-        # and generic decorators (*args, **kwargs);
-        # as long as `functools.wraps` decorator is used in those decorators.
-        self.register_controllers(self.prepare_controllers())
-
-    def get_controller_handler_pattern(
-        self, controller_type: Type, route: RegisteredRoute
-    ) -> bytes:
-        """
-        Returns the full pattern to be used for a route handler,
-        defined as controller method.
-        """
-        base_route = getattr(controller_type, "route", None)
-
-        if base_route is not None:
-            if callable(base_route):
-                value = base_route()
-            elif isinstance(base_route, (str, bytes)):
-                value = base_route
-            else:
-                raise RuntimeError(
-                    f"Invalid controller `route` attribute. "
-                    f"Controller `{controller_type.__name__}` "
-                    f"has an invalid route attribute: it should "
-                    f"be callable, or str, or bytes."
-                )
-
-            if value:
-                return ensure_bytes(join_fragments(value, route.pattern))
-        return ensure_bytes(route.pattern)
-
-    def prepare_controllers(self) -> List[Type]:
-        controller_types = []
-        for route in self.controllers_router:
-            handler = route.handler
-            controller_type = getattr(handler, "controller_type")
-            controller_types.append(controller_type)
-            handler.__annotations__["self"] = ControllerParameter[controller_type]
-            self.router.add(
-                route.method,
-                self.get_controller_handler_pattern(controller_type, route),
-                handler,
-                controller_type._filters_,
-            )
-        return controller_types
-
-    def register_controllers(self, controller_types: List[Type]):
-        """
-        Registers controller types as transient services
-        in the application service container.
-        """
-        if not controller_types:
-            return
-
-        for controller_class in controller_types:
-            if controller_class in self.services:
-                continue
-
-            self.services.register(controller_class)
-
     def normalize_handlers(self):
         configured_handlers = set()
 
@@ -689,15 +538,6 @@ class Application(BaseApplication):
         if self.middlewares:
             self._apply_middlewares_in_routes()
 
-    def extend(self, mixin) -> None:
-        """
-        Extends the class with additional features, applying the given mixin class.
-
-        This method should be used for those scenarios where opting-in for a feature
-        incurs a performance fee, so that said fee is paid only when necessary.
-        """
-        extend(self, mixin)
-
     async def start(self):
         if self.started:
             return
@@ -707,7 +547,6 @@ class Application(BaseApplication):
             await self.on_start.fire()
 
         validate_default_router()
-        self.use_controllers()
         self.normalize_handlers()
         self.configure_middlewares()
 
@@ -794,68 +633,3 @@ class Application(BaseApplication):
             return await self._handle_lifespan(receive, send)
 
         raise TypeError(f"Unsupported scope type: {scope['type']}")
-
-
-class MountMixin:
-    _mount: MountRegistry
-    base_path: str
-
-    def handle_mount_path(self, scope, route_match):
-        assert route_match.values is not None
-        tail = route_match.values.get("tail")
-        assert tail is not None
-        tail = "/" + tail
-
-        scope["path"] = tail
-        scope["raw_path"] = tail.encode("utf8")
-
-    async def _handle_redirect_to_mount_root(self, scope, send):
-        """
-        A request to the path "https://.../{mount_path}" must result in a
-        307 Temporary Redirect to the root of the mount: "https://.../{mount_path}/"
-        including a trailing slash.
-        """
-        response = Response(
-            307,
-            [
-                (
-                    b"Location",
-                    _ensure_bytes(
-                        get_request_url_from_scope(
-                            scope, trailing_slash=True, base_path=self.base_path
-                        )
-                    ),
-                )
-            ],
-        )
-        await send_asgi_response(response, send)
-
-    async def __call__(self, scope, receive, send):
-        if scope["type"] == "lifespan":
-            return await super()._handle_lifespan(receive, send)  # type: ignore
-
-        for route in self.mount_registry.mounted_apps:  # type: ignore
-            route_match = route.match_by_path(scope["raw_path"])
-            if route_match:
-                raw_path = scope["raw_path"]
-                if raw_path == route.pattern.rstrip(b"/*") and scope["type"] == "http":
-                    return await self._handle_redirect_to_mount_root(scope, send)
-                self.handle_mount_path(scope, route_match)
-                return await route.handler(scope, receive, send)
-
-        return await super().__call__(scope, receive, send)  # type: ignore
-
-
-def _auto_import(parent_file: str, folder_name):
-    parent_folder = Path(parent_file).parent
-    controllers_path = parent_folder / folder_name
-    if controllers_path.exists():
-        import_child_modules(controllers_path)
-
-
-def _auto_import_controllers(parent_file: str):
-    _auto_import(parent_file, "controllers")
-
-
-def _auto_import_routes(parent_file: str):
-    _auto_import(parent_file, "routes")
