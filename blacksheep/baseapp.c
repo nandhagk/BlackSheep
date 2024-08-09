@@ -1967,8 +1967,8 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct__handle_not_found {
  * 
  * 
  * async def handle_bad_request(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
- *     # supports for pydantic ValidationError with json() method
- *     if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):
+ *     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))
+ * 
  */
 struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_1_handle_bad_request {
   PyObject_HEAD
@@ -1978,7 +1978,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_1_handle_bad_request {
 };
 
 
-/* "blacksheep/baseapp.pyx":22
+/* "blacksheep/baseapp.pyx":18
  * 
  * 
  * async def common_http_exception_handler(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
@@ -1993,7 +1993,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exceptio
 };
 
 
-/* "blacksheep/baseapp.pyx":46
+/* "blacksheep/baseapp.pyx":42
  *         }
  * 
  *     async def log_unhandled_exc(self, request, exc):             # <<<<<<<<<<<<<<
@@ -2008,7 +2008,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc {
 };
 
 
-/* "blacksheep/baseapp.pyx":54
+/* "blacksheep/baseapp.pyx":50
  *         )
  * 
  *     async def log_handled_exc(self, request, exc):             # <<<<<<<<<<<<<<
@@ -2023,7 +2023,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc {
 };
 
 
-/* "blacksheep/baseapp.pyx":71
+/* "blacksheep/baseapp.pyx":67
  *             )
  * 
  *     async def handle(self, Request request):             # <<<<<<<<<<<<<<
@@ -2046,7 +2046,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_5_handle {
 };
 
 
-/* "blacksheep/baseapp.pyx":94
+/* "blacksheep/baseapp.pyx":90
  *         return response or Response(204)
  * 
  *     async def handle_request_handler_exception(self, request, exc):             # <<<<<<<<<<<<<<
@@ -2061,7 +2061,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handl
 };
 
 
-/* "blacksheep/baseapp.pyx":125
+/* "blacksheep/baseapp.pyx":121
  *         return None
  * 
  *     async def handle_internal_server_error(self, Request request, Exception exc):             # <<<<<<<<<<<<<<
@@ -2079,7 +2079,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_serv
 };
 
 
-/* "blacksheep/baseapp.pyx":143
+/* "blacksheep/baseapp.pyx":139
  *         return Response(500, content=TextContent("Internal server error."))
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):             # <<<<<<<<<<<<<<
@@ -2102,7 +2102,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_han
 };
 
 
-/* "blacksheep/baseapp.pyx":149
+/* "blacksheep/baseapp.pyx":145
  *             return await self.handle_exception(request, server_ex)
  * 
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
@@ -2118,7 +2118,7 @@ struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exceptio
 };
 
 
-/* "blacksheep/baseapp.pyx":156
+/* "blacksheep/baseapp.pyx":152
  *         return await self.handle_exception(request, http_exception)
  * 
  *     async def handle_exception(self, request, exc):             # <<<<<<<<<<<<<<
@@ -2243,7 +2243,7 @@ struct __pyx_vtabstruct_10blacksheep_8messages_Response {
 static struct __pyx_vtabstruct_10blacksheep_8messages_Response *__pyx_vtabptr_10blacksheep_8messages_Response;
 
 
-/* "blacksheep/baseapp.pyx":32
+/* "blacksheep/baseapp.pyx":28
  * 
  * 
  * cdef class BaseApplication:             # <<<<<<<<<<<<<<
@@ -2510,15 +2510,9 @@ static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
 /* pep479.proto */
 static void __Pyx_Generator_Replace_StopIteration(int in_async_gen);
 
-/* CallableCheck.proto */
-#if CYTHON_USE_TYPE_SLOTS && PY_MAJOR_VERSION >= 3
-#define __Pyx_PyCallable_Check(obj)   (Py_TYPE(obj)->tp_call != NULL)
-#else
-#define __Pyx_PyCallable_Check(obj)   PyCallable_Check(obj)
-#endif
-
-/* GetAttr3.proto */
-static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *, PyObject *, PyObject *);
+/* PyObject_Str.proto */
+#define __Pyx_PyObject_Str(obj)\
+    (likely(PyString_CheckExact(obj)) ? __Pyx_NewRef(obj) : PyObject_Str(obj))
 
 /* PyFunctionFastCall.proto */
 #if CYTHON_FAST_PYCALL
@@ -2563,10 +2557,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
 /* PyObjectFastCall.proto */
 #define __Pyx_PyObject_FastCall(func, args, nargs)  __Pyx_PyObject_FastCallDict(func, args, (size_t)(nargs), NULL)
 static CYTHON_INLINE PyObject* __Pyx_PyObject_FastCallDict(PyObject *func, PyObject **args, size_t nargs, PyObject *kwargs);
-
-/* PyObject_Str.proto */
-#define __Pyx_PyObject_Str(obj)\
-    (likely(PyString_CheckExact(obj)) ? __Pyx_NewRef(obj) : PyObject_Str(obj))
 
 /* PyObjectCallOneArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
@@ -2820,6 +2810,9 @@ static CYTHON_INLINE int __Pyx_PyDict_ContainsTF(PyObject* item, PyObject* dict,
     int result = PyDict_Contains(dict, item);
     return unlikely(result < 0) ? result : (result == (eq == Py_EQ));
 }
+
+/* GetAttr3.proto */
+static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *, PyObject *, PyObject *);
 
 /* PySequenceContains.proto */
 static CYTHON_INLINE int __Pyx_PySequence_ContainsTF(PyObject* item, PyObject* seq, int eq) {
@@ -3220,7 +3213,6 @@ static const char __pyx_k_args[] = "args";
 static const char __pyx_k_dict[] = "__dict__";
 static const char __pyx_k_http[] = "http";
 static const char __pyx_k_info[] = "info";
-static const char __pyx_k_json[] = "json";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_self[] = "self";
@@ -3238,7 +3230,6 @@ static const char __pyx_k_value[] = "value";
 static const char __pyx_k_decode[] = "decode";
 static const char __pyx_k_dict_2[] = "_dict";
 static const char __pyx_k_enable[] = "enable";
-static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_handle[] = "handle";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_logger[] = "logger";
@@ -3251,7 +3242,6 @@ static const char __pyx_k_status[] = "status";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_values[] = "values";
 static const char __pyx_k_content[] = "content";
-static const char __pyx_k_context[] = "__context__";
 static const char __pyx_k_disable[] = "disable";
 static const char __pyx_k_handler[] = "handler";
 static const char __pyx_k_logging[] = "logging";
@@ -3289,7 +3279,6 @@ static const char __pyx_k_BaseApplication[] = "BaseApplication";
 static const char __pyx_k_log_handled_exc[] = "log_handled_exc";
 static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
-static const char __pyx_k_application_json[] = "application/json";
 static const char __pyx_k_handle_exception[] = "handle_exception";
 static const char __pyx_k_handle_not_found[] = "handle_not_found";
 static const char __pyx_k_produce_response[] = "produce_response";
@@ -3508,7 +3497,6 @@ typedef struct {
   PyObject *__pyx_n_s__22;
   PyObject *__pyx_n_s__39;
   PyObject *__pyx_n_s_app;
-  PyObject *__pyx_kp_b_application_json;
   PyObject *__pyx_n_s_apply_exception_handler;
   PyObject *__pyx_n_s_args;
   PyObject *__pyx_n_s_asyncio_coroutines;
@@ -3520,13 +3508,11 @@ typedef struct {
   PyObject *__pyx_n_s_close;
   PyObject *__pyx_n_s_common_http_exception_handler;
   PyObject *__pyx_n_s_content;
-  PyObject *__pyx_n_s_context;
   PyObject *__pyx_n_s_decode;
   PyObject *__pyx_n_s_dict;
   PyObject *__pyx_n_s_dict_2;
   PyObject *__pyx_kp_u_disable;
   PyObject *__pyx_kp_u_enable;
-  PyObject *__pyx_n_s_encode;
   PyObject *__pyx_n_s_error;
   PyObject *__pyx_n_s_exc;
   PyObject *__pyx_n_s_exc_info;
@@ -3555,8 +3541,6 @@ typedef struct {
   PyObject *__pyx_n_s_initializing;
   PyObject *__pyx_n_s_is_coroutine;
   PyObject *__pyx_kp_u_isenabled;
-  PyObject *__pyx_n_s_json;
-  PyObject *__pyx_n_u_json;
   PyObject *__pyx_n_s_log_handled_exc;
   PyObject *__pyx_n_s_log_unhandled_exc;
   PyObject *__pyx_n_s_logger;
@@ -3770,7 +3754,6 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s__22);
   Py_CLEAR(clear_module_state->__pyx_n_s__39);
   Py_CLEAR(clear_module_state->__pyx_n_s_app);
-  Py_CLEAR(clear_module_state->__pyx_kp_b_application_json);
   Py_CLEAR(clear_module_state->__pyx_n_s_apply_exception_handler);
   Py_CLEAR(clear_module_state->__pyx_n_s_args);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
@@ -3782,13 +3765,11 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_close);
   Py_CLEAR(clear_module_state->__pyx_n_s_common_http_exception_handler);
   Py_CLEAR(clear_module_state->__pyx_n_s_content);
-  Py_CLEAR(clear_module_state->__pyx_n_s_context);
   Py_CLEAR(clear_module_state->__pyx_n_s_decode);
   Py_CLEAR(clear_module_state->__pyx_n_s_dict);
   Py_CLEAR(clear_module_state->__pyx_n_s_dict_2);
   Py_CLEAR(clear_module_state->__pyx_kp_u_disable);
   Py_CLEAR(clear_module_state->__pyx_kp_u_enable);
-  Py_CLEAR(clear_module_state->__pyx_n_s_encode);
   Py_CLEAR(clear_module_state->__pyx_n_s_error);
   Py_CLEAR(clear_module_state->__pyx_n_s_exc);
   Py_CLEAR(clear_module_state->__pyx_n_s_exc_info);
@@ -3817,8 +3798,6 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_initializing);
   Py_CLEAR(clear_module_state->__pyx_n_s_is_coroutine);
   Py_CLEAR(clear_module_state->__pyx_kp_u_isenabled);
-  Py_CLEAR(clear_module_state->__pyx_n_s_json);
-  Py_CLEAR(clear_module_state->__pyx_n_u_json);
   Py_CLEAR(clear_module_state->__pyx_n_s_log_handled_exc);
   Py_CLEAR(clear_module_state->__pyx_n_s_log_unhandled_exc);
   Py_CLEAR(clear_module_state->__pyx_n_s_logger);
@@ -4010,7 +3989,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s__22);
   Py_VISIT(traverse_module_state->__pyx_n_s__39);
   Py_VISIT(traverse_module_state->__pyx_n_s_app);
-  Py_VISIT(traverse_module_state->__pyx_kp_b_application_json);
   Py_VISIT(traverse_module_state->__pyx_n_s_apply_exception_handler);
   Py_VISIT(traverse_module_state->__pyx_n_s_args);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
@@ -4022,13 +4000,11 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_close);
   Py_VISIT(traverse_module_state->__pyx_n_s_common_http_exception_handler);
   Py_VISIT(traverse_module_state->__pyx_n_s_content);
-  Py_VISIT(traverse_module_state->__pyx_n_s_context);
   Py_VISIT(traverse_module_state->__pyx_n_s_decode);
   Py_VISIT(traverse_module_state->__pyx_n_s_dict);
   Py_VISIT(traverse_module_state->__pyx_n_s_dict_2);
   Py_VISIT(traverse_module_state->__pyx_kp_u_disable);
   Py_VISIT(traverse_module_state->__pyx_kp_u_enable);
-  Py_VISIT(traverse_module_state->__pyx_n_s_encode);
   Py_VISIT(traverse_module_state->__pyx_n_s_error);
   Py_VISIT(traverse_module_state->__pyx_n_s_exc);
   Py_VISIT(traverse_module_state->__pyx_n_s_exc_info);
@@ -4057,8 +4033,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_initializing);
   Py_VISIT(traverse_module_state->__pyx_n_s_is_coroutine);
   Py_VISIT(traverse_module_state->__pyx_kp_u_isenabled);
-  Py_VISIT(traverse_module_state->__pyx_n_s_json);
-  Py_VISIT(traverse_module_state->__pyx_n_u_json);
   Py_VISIT(traverse_module_state->__pyx_n_s_log_handled_exc);
   Py_VISIT(traverse_module_state->__pyx_n_s_log_unhandled_exc);
   Py_VISIT(traverse_module_state->__pyx_n_s_logger);
@@ -4288,7 +4262,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s__22 __pyx_mstate_global->__pyx_n_s__22
 #define __pyx_n_s__39 __pyx_mstate_global->__pyx_n_s__39
 #define __pyx_n_s_app __pyx_mstate_global->__pyx_n_s_app
-#define __pyx_kp_b_application_json __pyx_mstate_global->__pyx_kp_b_application_json
 #define __pyx_n_s_apply_exception_handler __pyx_mstate_global->__pyx_n_s_apply_exception_handler
 #define __pyx_n_s_args __pyx_mstate_global->__pyx_n_s_args
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
@@ -4300,13 +4273,11 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_close __pyx_mstate_global->__pyx_n_s_close
 #define __pyx_n_s_common_http_exception_handler __pyx_mstate_global->__pyx_n_s_common_http_exception_handler
 #define __pyx_n_s_content __pyx_mstate_global->__pyx_n_s_content
-#define __pyx_n_s_context __pyx_mstate_global->__pyx_n_s_context
 #define __pyx_n_s_decode __pyx_mstate_global->__pyx_n_s_decode
 #define __pyx_n_s_dict __pyx_mstate_global->__pyx_n_s_dict
 #define __pyx_n_s_dict_2 __pyx_mstate_global->__pyx_n_s_dict_2
 #define __pyx_kp_u_disable __pyx_mstate_global->__pyx_kp_u_disable
 #define __pyx_kp_u_enable __pyx_mstate_global->__pyx_kp_u_enable
-#define __pyx_n_s_encode __pyx_mstate_global->__pyx_n_s_encode
 #define __pyx_n_s_error __pyx_mstate_global->__pyx_n_s_error
 #define __pyx_n_s_exc __pyx_mstate_global->__pyx_n_s_exc
 #define __pyx_n_s_exc_info __pyx_mstate_global->__pyx_n_s_exc_info
@@ -4335,8 +4306,6 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_initializing __pyx_mstate_global->__pyx_n_s_initializing
 #define __pyx_n_s_is_coroutine __pyx_mstate_global->__pyx_n_s_is_coroutine
 #define __pyx_kp_u_isenabled __pyx_mstate_global->__pyx_kp_u_isenabled
-#define __pyx_n_s_json __pyx_mstate_global->__pyx_n_s_json
-#define __pyx_n_u_json __pyx_mstate_global->__pyx_n_u_json
 #define __pyx_n_s_log_handled_exc __pyx_mstate_global->__pyx_n_s_log_handled_exc
 #define __pyx_n_s_log_unhandled_exc __pyx_mstate_global->__pyx_n_s_log_unhandled_exc
 #define __pyx_n_s_logger __pyx_mstate_global->__pyx_n_s_logger
@@ -6778,8 +6747,8 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_5generator1(__pyx_CoroutineObjec
  * 
  * 
  * async def handle_bad_request(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
- *     # supports for pydantic ValidationError with json() method
- *     if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):
+ *     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))
+ * 
  */
 
 /* Python wrapper */
@@ -6960,15 +6929,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_5generator1(__pyx_CoroutineObjec
 {
   struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_1_handle_bad_request *__pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_1_handle_bad_request *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
-  int __pyx_t_1;
+  PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *__pyx_t_8 = NULL;
-  int __pyx_t_9;
+  PyObject *__pyx_t_3 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6983,157 +6946,31 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_5generator1(__pyx_CoroutineObjec
   __pyx_L3_first_run:;
   if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 14, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":16
+  /* "blacksheep/baseapp.pyx":15
+ * 
  * async def handle_bad_request(app, Request request, HTTPException http_exception):
- *     # supports for pydantic ValidationError with json() method
- *     if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):             # <<<<<<<<<<<<<<
- *         return Response(http_exception.status, content=Content(b"application/json", http_exception.__context__.json().encode()))
- * 
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_http_exception), __pyx_n_s_context); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = (__pyx_t_2 != Py_None);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__pyx_t_3) {
-  } else {
-    __pyx_t_1 = __pyx_t_3;
-    goto __pyx_L5_bool_binop_done;
-  }
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_http_exception), __pyx_n_s_context); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_GetAttr3(__pyx_t_2, __pyx_n_u_json, Py_None); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 16, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyCallable_Check(__pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 16, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_1 = __pyx_t_3;
-  __pyx_L5_bool_binop_done:;
-  if (__pyx_t_1) {
-
-    /* "blacksheep/baseapp.pyx":17
- *     # supports for pydantic ValidationError with json() method
- *     if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):
- *         return Response(http_exception.status, content=Content(b"application/json", http_exception.__context__.json().encode()))             # <<<<<<<<<<<<<<
- * 
- *     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))
- */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_http_exception->status); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_GIVEREF(__pyx_t_4);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4)) __PYX_ERR(0, 17, __pyx_L1_error);
-    __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_http_exception), __pyx_n_s_context); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_json); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = NULL;
-    __pyx_t_9 = 0;
-    #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_8))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_8);
-      if (likely(__pyx_t_7)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
-        __Pyx_INCREF(__pyx_t_7);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_8, function);
-        __pyx_t_9 = 1;
-      }
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_7, NULL};
-      __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+1-__pyx_t_9, 0+__pyx_t_9);
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 17, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    }
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_encode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = NULL;
-    __pyx_t_9 = 0;
-    #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_8))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_8);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
-        __Pyx_INCREF(__pyx_t_6);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_8, function);
-        __pyx_t_9 = 1;
-      }
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_6, NULL};
-      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+1-__pyx_t_9, 0+__pyx_t_9);
-      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 17, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    }
-    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_INCREF(__pyx_kp_b_application_json);
-    __Pyx_GIVEREF(__pyx_kp_b_application_json);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_kp_b_application_json)) __PYX_ERR(0, 17, __pyx_L1_error);
-    __Pyx_GIVEREF(__pyx_t_5);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_5)) __PYX_ERR(0, 17, __pyx_L1_error);
-    __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8contents_Content), __pyx_t_8, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_content, __pyx_t_5) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 17, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    goto __pyx_L0;
-
-    /* "blacksheep/baseapp.pyx":16
- * async def handle_bad_request(app, Request request, HTTPException http_exception):
- *     # supports for pydantic ValidationError with json() method
- *     if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):             # <<<<<<<<<<<<<<
- *         return Response(http_exception.status, content=Content(b"application/json", http_exception.__context__.json().encode()))
- * 
- */
-  }
-
-  /* "blacksheep/baseapp.pyx":19
- *         return Response(http_exception.status, content=Content(b"application/json", http_exception.__context__.json().encode()))
- * 
  *     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyObject_Str(((PyObject *)__pyx_cur_scope->__pyx_v_http_exception)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = PyNumber_Add(__pyx_kp_u_Bad_Request, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Str(((PyObject *)__pyx_cur_scope->__pyx_v_http_exception)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_10blacksheep_8contents_TextContent), __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = PyNumber_Add(__pyx_kp_u_Bad_Request, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_content, __pyx_t_4) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__6, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_10blacksheep_8contents_TextContent), __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_content, __pyx_t_2) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__6, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
@@ -7141,19 +6978,16 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_5generator1(__pyx_CoroutineObjec
  * 
  * 
  * async def handle_bad_request(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
- *     # supports for pydantic ValidationError with json() method
- *     if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):
+ *     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))
+ * 
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_Generator_Replace_StopIteration(0);
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("handle_bad_request", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
@@ -7167,7 +7001,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_5generator1(__pyx_CoroutineObjec
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_8generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":22
+/* "blacksheep/baseapp.pyx":18
  * 
  * 
  * async def common_http_exception_handler(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
@@ -7234,7 +7068,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -7242,9 +7076,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("common_http_exception_handler", 1, 3, 3, 1); __PYX_ERR(0, 22, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("common_http_exception_handler", 1, 3, 3, 1); __PYX_ERR(0, 18, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -7252,14 +7086,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("common_http_exception_handler", 1, 3, 3, 2); __PYX_ERR(0, 22, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("common_http_exception_handler", 1, 3, 3, 2); __PYX_ERR(0, 18, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "common_http_exception_handler") < 0)) __PYX_ERR(0, 22, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "common_http_exception_handler") < 0)) __PYX_ERR(0, 18, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -7274,7 +7108,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("common_http_exception_handler", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 22, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("common_http_exception_handler", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 18, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7288,8 +7122,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 22, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_http_exception), __pyx_ptype_10blacksheep_10exceptions_HTTPException, 1, "http_exception", 0))) __PYX_ERR(0, 22, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 18, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_http_exception), __pyx_ptype_10blacksheep_10exceptions_HTTPException, 1, "http_exception", 0))) __PYX_ERR(0, 18, __pyx_L1_error)
   __pyx_r = __pyx_pf_10blacksheep_7baseapp_6common_http_exception_handler(__pyx_self, __pyx_v_app, __pyx_v_request, __pyx_v_http_exception);
 
   /* function exit code */
@@ -7319,7 +7153,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_6common_http_exception_handler(C
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 22, __pyx_L1_error)
+    __PYX_ERR(0, 18, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -7333,7 +7167,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_6common_http_exception_handler(C
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_http_exception);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_http_exception);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_8generator2, __pyx_codeobj__7, (PyObject *) __pyx_cur_scope, __pyx_n_s_common_http_exception_handler, __pyx_n_s_common_http_exception_handler, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_8generator2, __pyx_codeobj__7, (PyObject *) __pyx_cur_scope, __pyx_n_s_common_http_exception_handler, __pyx_n_s_common_http_exception_handler, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 18, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -7372,9 +7206,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_8generator2(__pyx_CoroutineObjec
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 22, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 18, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":23
+  /* "blacksheep/baseapp.pyx":19
  * 
  * async def common_http_exception_handler(app, Request request, HTTPException http_exception):
  *     return Response(http_exception.status, content=TextContent(http.HTTPStatus(http_exception.status).phrase))             # <<<<<<<<<<<<<<
@@ -7382,21 +7216,21 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_8generator2(__pyx_CoroutineObjec
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_http_exception->status); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_http_exception->status); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_http); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_http); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_HTTPStatus); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_HTTPStatus); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_http_exception->status); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_http_exception->status); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_6 = NULL;
   __pyx_t_7 = 0;
@@ -7417,19 +7251,19 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_8generator2(__pyx_CoroutineObjec
     __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_phrase); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_phrase); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_10blacksheep_8contents_TextContent), __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_10blacksheep_8contents_TextContent), __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_content, __pyx_t_3) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_content, __pyx_t_3) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -7438,7 +7272,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_8generator2(__pyx_CoroutineObjec
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":22
+  /* "blacksheep/baseapp.pyx":18
  * 
  * 
  * async def common_http_exception_handler(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
@@ -7467,7 +7301,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_8generator2(__pyx_CoroutineObjec
   return __pyx_r;
 }
 
-/* "blacksheep/baseapp.pyx":26
+/* "blacksheep/baseapp.pyx":22
  * 
  * 
  * def get_logger():             # <<<<<<<<<<<<<<
@@ -7505,16 +7339,16 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_9get_logger(CYTHON_UNUSED PyObje
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_logger", 1);
 
-  /* "blacksheep/baseapp.pyx":27
+  /* "blacksheep/baseapp.pyx":23
  * 
  * def get_logger():
  *     logger = logging.getLogger("blacksheep.server")             # <<<<<<<<<<<<<<
  *     logger.setLevel(logging.INFO)
  *     return logger
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_getLogger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_getLogger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -7535,25 +7369,25 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_9get_logger(CYTHON_UNUSED PyObje
     PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_kp_u_blacksheep_server};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __pyx_v_logger = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "blacksheep/baseapp.pyx":28
+  /* "blacksheep/baseapp.pyx":24
  * def get_logger():
  *     logger = logging.getLogger("blacksheep.server")
  *     logger.setLevel(logging.INFO)             # <<<<<<<<<<<<<<
  *     return logger
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_logger, __pyx_n_s_setLevel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_logger, __pyx_n_s_setLevel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_INFO); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_INFO); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -7575,13 +7409,13 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_9get_logger(CYTHON_UNUSED PyObje
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "blacksheep/baseapp.pyx":29
+  /* "blacksheep/baseapp.pyx":25
  *     logger = logging.getLogger("blacksheep.server")
  *     logger.setLevel(logging.INFO)
  *     return logger             # <<<<<<<<<<<<<<
@@ -7593,7 +7427,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_9get_logger(CYTHON_UNUSED PyObje
   __pyx_r = __pyx_v_logger;
   goto __pyx_L0;
 
-  /* "blacksheep/baseapp.pyx":26
+  /* "blacksheep/baseapp.pyx":22
  * 
  * 
  * def get_logger():             # <<<<<<<<<<<<<<
@@ -7616,7 +7450,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_9get_logger(CYTHON_UNUSED PyObje
   return __pyx_r;
 }
 
-/* "blacksheep/baseapp.pyx":34
+/* "blacksheep/baseapp.pyx":30
  * cdef class BaseApplication:
  * 
  *     def __init__(self, bint show_error_details, object router):             # <<<<<<<<<<<<<<
@@ -7663,7 +7497,7 @@ static int __pyx_pw_10blacksheep_7baseapp_15BaseApplication_1__init__(PyObject *
           (void)__Pyx_Arg_NewRef_VARARGS(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 30, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -7671,14 +7505,14 @@ static int __pyx_pw_10blacksheep_7baseapp_15BaseApplication_1__init__(PyObject *
           (void)__Pyx_Arg_NewRef_VARARGS(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 30, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 34, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 30, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 34, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "__init__") < 0)) __PYX_ERR(0, 30, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -7686,12 +7520,12 @@ static int __pyx_pw_10blacksheep_7baseapp_15BaseApplication_1__init__(PyObject *
       values[0] = __Pyx_Arg_VARARGS(__pyx_args, 0);
       values[1] = __Pyx_Arg_VARARGS(__pyx_args, 1);
     }
-    __pyx_v_show_error_details = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_show_error_details == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L3_error)
+    __pyx_v_show_error_details = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_show_error_details == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 30, __pyx_L3_error)
     __pyx_v_router = values[1];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 34, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 30, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7730,7 +7564,7 @@ static int __pyx_pf_10blacksheep_7baseapp_15BaseApplication___init__(struct __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 1);
 
-  /* "blacksheep/baseapp.pyx":35
+  /* "blacksheep/baseapp.pyx":31
  * 
  *     def __init__(self, bint show_error_details, object router):
  *         self.router = router             # <<<<<<<<<<<<<<
@@ -7743,14 +7577,14 @@ static int __pyx_pf_10blacksheep_7baseapp_15BaseApplication___init__(struct __py
   __Pyx_DECREF(__pyx_v_self->router);
   __pyx_v_self->router = __pyx_v_router;
 
-  /* "blacksheep/baseapp.pyx":36
+  /* "blacksheep/baseapp.pyx":32
  *     def __init__(self, bint show_error_details, object router):
  *         self.router = router
  *         self.exceptions_handlers = self.init_exceptions_handlers()             # <<<<<<<<<<<<<<
  *         self.show_error_details = show_error_details
  *         self.logger = get_logger()
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_init_exceptions_handlers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_init_exceptions_handlers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -7770,18 +7604,18 @@ static int __pyx_pf_10blacksheep_7baseapp_15BaseApplication___init__(struct __py
     PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 0+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
-  if (!(likely(PyDict_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("dict", __pyx_t_1))) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (!(likely(PyDict_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("dict", __pyx_t_1))) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->exceptions_handlers);
   __Pyx_DECREF(__pyx_v_self->exceptions_handlers);
   __pyx_v_self->exceptions_handlers = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "blacksheep/baseapp.pyx":37
+  /* "blacksheep/baseapp.pyx":33
  *         self.router = router
  *         self.exceptions_handlers = self.init_exceptions_handlers()
  *         self.show_error_details = show_error_details             # <<<<<<<<<<<<<<
@@ -7790,14 +7624,14 @@ static int __pyx_pf_10blacksheep_7baseapp_15BaseApplication___init__(struct __py
  */
   __pyx_v_self->show_error_details = __pyx_v_show_error_details;
 
-  /* "blacksheep/baseapp.pyx":38
+  /* "blacksheep/baseapp.pyx":34
  *         self.exceptions_handlers = self.init_exceptions_handlers()
  *         self.show_error_details = show_error_details
  *         self.logger = get_logger()             # <<<<<<<<<<<<<<
  * 
  *     def init_exceptions_handlers(self):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_get_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_get_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -7817,7 +7651,7 @@ static int __pyx_pf_10blacksheep_7baseapp_15BaseApplication___init__(struct __py
     PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 0+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
@@ -7827,7 +7661,7 @@ static int __pyx_pf_10blacksheep_7baseapp_15BaseApplication___init__(struct __py
   __pyx_v_self->logger = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "blacksheep/baseapp.pyx":34
+  /* "blacksheep/baseapp.pyx":30
  * cdef class BaseApplication:
  * 
  *     def __init__(self, bint show_error_details, object router):             # <<<<<<<<<<<<<<
@@ -7849,7 +7683,7 @@ static int __pyx_pf_10blacksheep_7baseapp_15BaseApplication___init__(struct __py
   return __pyx_r;
 }
 
-/* "blacksheep/baseapp.pyx":40
+/* "blacksheep/baseapp.pyx":36
  *         self.logger = get_logger()
  * 
  *     def init_exceptions_handlers(self):             # <<<<<<<<<<<<<<
@@ -7908,7 +7742,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_2init_exceptio
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("init_exceptions_handlers", 1);
 
-  /* "blacksheep/baseapp.pyx":41
+  /* "blacksheep/baseapp.pyx":37
  * 
  *     def init_exceptions_handlers(self):
  *         return {             # <<<<<<<<<<<<<<
@@ -7917,36 +7751,36 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_2init_exceptio
  */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "blacksheep/baseapp.pyx":42
+  /* "blacksheep/baseapp.pyx":38
  *     def init_exceptions_handlers(self):
  *         return {
  *             404: handle_not_found,             # <<<<<<<<<<<<<<
  *             400: handle_bad_request
  *         }
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_handle_not_found); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_handle_not_found); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_int_404, __pyx_t_2) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_int_404, __pyx_t_2) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "blacksheep/baseapp.pyx":43
+  /* "blacksheep/baseapp.pyx":39
  *         return {
  *             404: handle_not_found,
  *             400: handle_bad_request             # <<<<<<<<<<<<<<
  *         }
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_handle_bad_request); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_handle_bad_request); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_int_400, __pyx_t_2) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_int_400, __pyx_t_2) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "blacksheep/baseapp.pyx":40
+  /* "blacksheep/baseapp.pyx":36
  *         self.logger = get_logger()
  * 
  *     def init_exceptions_handlers(self):             # <<<<<<<<<<<<<<
@@ -7967,7 +7801,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_2init_exceptio
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_6generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":46
+/* "blacksheep/baseapp.pyx":42
  *         }
  * 
  *     async def log_unhandled_exc(self, request, exc):             # <<<<<<<<<<<<<<
@@ -8031,7 +7865,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 42, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -8039,14 +7873,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 42, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("log_unhandled_exc", 1, 2, 2, 1); __PYX_ERR(0, 46, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("log_unhandled_exc", 1, 2, 2, 1); __PYX_ERR(0, 42, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "log_unhandled_exc") < 0)) __PYX_ERR(0, 46, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "log_unhandled_exc") < 0)) __PYX_ERR(0, 42, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -8059,7 +7893,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("log_unhandled_exc", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 46, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("log_unhandled_exc", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 42, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8098,7 +7932,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_4log_unhandled
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 46, __pyx_L1_error)
+    __PYX_ERR(0, 42, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -8112,7 +7946,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_4log_unhandled
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_exc);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_exc);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_6generator3, __pyx_codeobj__8, (PyObject *) __pyx_cur_scope, __pyx_n_s_log_unhandled_exc, __pyx_n_s_BaseApplication_log_unhandled_ex, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 46, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_6generator3, __pyx_codeobj__8, (PyObject *) __pyx_cur_scope, __pyx_n_s_log_unhandled_exc, __pyx_n_s_BaseApplication_log_unhandled_ex, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 42, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -8150,41 +7984,41 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_6generator3(__
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 46, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 42, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":47
+  /* "blacksheep/baseapp.pyx":43
  * 
  *     async def log_unhandled_exc(self, request, exc):
  *         self.logger.error(             # <<<<<<<<<<<<<<
  *             "Unhandled exception - \"%s %s\"",
  *             request.method,
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->logger, __pyx_n_s_error); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->logger, __pyx_n_s_error); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "blacksheep/baseapp.pyx":49
+  /* "blacksheep/baseapp.pyx":45
  *         self.logger.error(
  *             "Unhandled exception - \"%s %s\"",
  *             request.method,             # <<<<<<<<<<<<<<
  *             request.url.value.decode(),
  *             exc_info=exc
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_method); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_method); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "blacksheep/baseapp.pyx":50
+  /* "blacksheep/baseapp.pyx":46
  *             "Unhandled exception - \"%s %s\"",
  *             request.method,
  *             request.url.value.decode(),             # <<<<<<<<<<<<<<
  *             exc_info=exc
  *         )
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_url); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_url); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_decode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_decode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -8205,49 +8039,49 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_6generator3(__
     PyObject *__pyx_callargs[2] = {__pyx_t_5, NULL};
     __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_6, 0+__pyx_t_6);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
 
-  /* "blacksheep/baseapp.pyx":47
+  /* "blacksheep/baseapp.pyx":43
  * 
  *     async def log_unhandled_exc(self, request, exc):
  *         self.logger.error(             # <<<<<<<<<<<<<<
  *             "Unhandled exception - \"%s %s\"",
  *             request.method,
  */
-  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_kp_u_Unhandled_exception_s_s);
   __Pyx_GIVEREF(__pyx_kp_u_Unhandled_exception_s_s);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u_Unhandled_exception_s_s)) __PYX_ERR(0, 47, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u_Unhandled_exception_s_s)) __PYX_ERR(0, 43, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_2);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error);
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
 
-  /* "blacksheep/baseapp.pyx":51
+  /* "blacksheep/baseapp.pyx":47
  *             request.method,
  *             request.url.value.decode(),
  *             exc_info=exc             # <<<<<<<<<<<<<<
  *         )
  * 
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_exc_info, __pyx_cur_scope->__pyx_v_exc) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_exc_info, __pyx_cur_scope->__pyx_v_exc) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":47
+  /* "blacksheep/baseapp.pyx":43
  * 
  *     async def log_unhandled_exc(self, request, exc):
  *         self.logger.error(             # <<<<<<<<<<<<<<
  *             "Unhandled exception - \"%s %s\"",
  *             request.method,
  */
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -8255,7 +8089,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_6generator3(__
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":46
+  /* "blacksheep/baseapp.pyx":42
  *         }
  * 
  *     async def log_unhandled_exc(self, request, exc):             # <<<<<<<<<<<<<<
@@ -8286,7 +8120,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_6generator3(__
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":54
+/* "blacksheep/baseapp.pyx":50
  *         )
  * 
  *     async def log_handled_exc(self, request, exc):             # <<<<<<<<<<<<<<
@@ -8350,7 +8184,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -8358,14 +8192,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("log_handled_exc", 1, 2, 2, 1); __PYX_ERR(0, 54, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("log_handled_exc", 1, 2, 2, 1); __PYX_ERR(0, 50, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "log_handled_exc") < 0)) __PYX_ERR(0, 54, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "log_handled_exc") < 0)) __PYX_ERR(0, 50, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -8378,7 +8212,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("log_handled_exc", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 54, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("log_handled_exc", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 50, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8417,7 +8251,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_7log_handled_e
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 54, __pyx_L1_error)
+    __PYX_ERR(0, 50, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -8431,7 +8265,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_7log_handled_e
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_exc);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_exc);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4, __pyx_codeobj__9, (PyObject *) __pyx_cur_scope, __pyx_n_s_log_handled_exc, __pyx_n_s_BaseApplication_log_handled_exc, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4, __pyx_codeobj__9, (PyObject *) __pyx_cur_scope, __pyx_n_s_log_handled_exc, __pyx_n_s_BaseApplication_log_handled_exc, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -8472,9 +8306,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 54, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 50, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":55
+  /* "blacksheep/baseapp.pyx":51
  * 
  *     async def log_handled_exc(self, request, exc):
  *         if isinstance(exc, HTTPException):             # <<<<<<<<<<<<<<
@@ -8484,49 +8318,49 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
   __pyx_t_1 = __Pyx_TypeCheck(__pyx_cur_scope->__pyx_v_exc, __pyx_ptype_10blacksheep_10exceptions_HTTPException); 
   if (__pyx_t_1) {
 
-    /* "blacksheep/baseapp.pyx":56
+    /* "blacksheep/baseapp.pyx":52
  *     async def log_handled_exc(self, request, exc):
  *         if isinstance(exc, HTTPException):
  *             self.logger.info(             # <<<<<<<<<<<<<<
  *                 "HTTP %s - \"%s %s\". %s",
  *                 exc.status,
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->logger, __pyx_n_s_info); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->logger, __pyx_n_s_info); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
 
-    /* "blacksheep/baseapp.pyx":58
+    /* "blacksheep/baseapp.pyx":54
  *             self.logger.info(
  *                 "HTTP %s - \"%s %s\". %s",
  *                 exc.status,             # <<<<<<<<<<<<<<
  *                 request.method,
  *                 request.url.value.decode(),
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_exc, __pyx_n_s_status); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_exc, __pyx_n_s_status); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
 
-    /* "blacksheep/baseapp.pyx":59
+    /* "blacksheep/baseapp.pyx":55
  *                 "HTTP %s - \"%s %s\". %s",
  *                 exc.status,
  *                 request.method,             # <<<<<<<<<<<<<<
  *                 request.url.value.decode(),
  *                 str(exc)
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_method); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_method); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
 
-    /* "blacksheep/baseapp.pyx":60
+    /* "blacksheep/baseapp.pyx":56
  *                 exc.status,
  *                 request.method,
  *                 request.url.value.decode(),             # <<<<<<<<<<<<<<
  *                 str(exc)
  *             )
  */
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_url); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_url); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_value); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_value); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_decode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_decode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_8 = NULL;
@@ -8547,19 +8381,19 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
       PyObject *__pyx_callargs[2] = {__pyx_t_8, NULL};
       __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_7, __pyx_callargs+1-__pyx_t_9, 0+__pyx_t_9);
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 56, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
 
-    /* "blacksheep/baseapp.pyx":61
+    /* "blacksheep/baseapp.pyx":57
  *                 request.method,
  *                 request.url.value.decode(),
  *                 str(exc)             # <<<<<<<<<<<<<<
  *             )
  *         else:
  */
-    __pyx_t_7 = __Pyx_PyObject_Str(__pyx_cur_scope->__pyx_v_exc); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_Str(__pyx_cur_scope->__pyx_v_exc); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_8 = NULL;
     __pyx_t_9 = 0;
@@ -8583,13 +8417,13 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "blacksheep/baseapp.pyx":55
+    /* "blacksheep/baseapp.pyx":51
  * 
  *     async def log_handled_exc(self, request, exc):
  *         if isinstance(exc, HTTPException):             # <<<<<<<<<<<<<<
@@ -8599,7 +8433,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
     goto __pyx_L4;
   }
 
-  /* "blacksheep/baseapp.pyx":64
+  /* "blacksheep/baseapp.pyx":60
  *             )
  *         else:
  *             self.logger.info(             # <<<<<<<<<<<<<<
@@ -8607,32 +8441,32 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
  *                 request.method,
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->logger, __pyx_n_s_info); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->logger, __pyx_n_s_info); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
 
-    /* "blacksheep/baseapp.pyx":66
+    /* "blacksheep/baseapp.pyx":62
  *             self.logger.info(
  *                 "Handled error: \"%s %s\". %s",
  *                 request.method,             # <<<<<<<<<<<<<<
  *                 request.url.value.decode(),
  *                 str(exc)
  */
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_method); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_method); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
 
-    /* "blacksheep/baseapp.pyx":67
+    /* "blacksheep/baseapp.pyx":63
  *                 "Handled error: \"%s %s\". %s",
  *                 request.method,
  *                 request.url.value.decode(),             # <<<<<<<<<<<<<<
  *                 str(exc)
  *             )
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_url); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_request, __pyx_n_s_url); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_decode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_decode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -8653,19 +8487,19 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
       PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
       __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_9, 0+__pyx_t_9);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 67, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
 
-    /* "blacksheep/baseapp.pyx":68
+    /* "blacksheep/baseapp.pyx":64
  *                 request.method,
  *                 request.url.value.decode(),
  *                 str(exc)             # <<<<<<<<<<<<<<
  *             )
  * 
  */
-    __pyx_t_5 = __Pyx_PyObject_Str(__pyx_cur_scope->__pyx_v_exc); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 68, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Str(__pyx_cur_scope->__pyx_v_exc); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_4 = NULL;
     __pyx_t_9 = 0;
@@ -8688,7 +8522,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
@@ -8697,7 +8531,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
   __pyx_L4:;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":54
+  /* "blacksheep/baseapp.pyx":50
  *         )
  * 
  *     async def log_handled_exc(self, request, exc):             # <<<<<<<<<<<<<<
@@ -8730,7 +8564,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_9generator4(__
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":71
+/* "blacksheep/baseapp.pyx":67
  *             )
  * 
  *     async def handle(self, Request request):             # <<<<<<<<<<<<<<
@@ -8791,12 +8625,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 71, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle") < 0)) __PYX_ERR(0, 71, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle") < 0)) __PYX_ERR(0, 67, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -8807,7 +8641,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("handle", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 71, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("handle", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 67, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8821,7 +8655,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 67, __pyx_L1_error)
   __pyx_r = __pyx_pf_10blacksheep_7baseapp_15BaseApplication_10handle(((struct __pyx_obj_10blacksheep_7baseapp_BaseApplication *)__pyx_v_self), __pyx_v_request);
 
   /* function exit code */
@@ -8851,7 +8685,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_10handle(struc
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_5_handle *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 71, __pyx_L1_error)
+    __PYX_ERR(0, 67, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -8862,7 +8696,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_10handle(struc
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_request);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_request);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5, __pyx_codeobj__10, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle, __pyx_n_s_BaseApplication_handle, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5, __pyx_codeobj__10, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle, __pyx_n_s_BaseApplication_handle, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -8917,16 +8751,16 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 67, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":75
+  /* "blacksheep/baseapp.pyx":71
  *         cdef Response response
  * 
  *         route = self.router.get_match(request)             # <<<<<<<<<<<<<<
  * 
  *         if route:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->router, __pyx_n_s_get_match); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->router, __pyx_n_s_get_match); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -8946,7 +8780,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
     PyObject *__pyx_callargs[2] = {__pyx_t_3, ((PyObject *)__pyx_cur_scope->__pyx_v_request)};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
@@ -8954,24 +8788,24 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
   __pyx_cur_scope->__pyx_v_route = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "blacksheep/baseapp.pyx":77
+  /* "blacksheep/baseapp.pyx":73
  *         route = self.router.get_match(request)
  * 
  *         if route:             # <<<<<<<<<<<<<<
  *             request.route_values = route.values
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_route); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_route); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 73, __pyx_L1_error)
   if (__pyx_t_5) {
 
-    /* "blacksheep/baseapp.pyx":78
+    /* "blacksheep/baseapp.pyx":74
  * 
  *         if route:
  *             request.route_values = route.values             # <<<<<<<<<<<<<<
  * 
  *             try:
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_route, __pyx_n_s_values); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_route, __pyx_n_s_values); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_request->route_values);
@@ -8979,7 +8813,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
     __pyx_cur_scope->__pyx_v_request->route_values = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "blacksheep/baseapp.pyx":80
+    /* "blacksheep/baseapp.pyx":76
  *             request.route_values = route.values
  * 
  *             try:             # <<<<<<<<<<<<<<
@@ -8993,14 +8827,14 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
       __Pyx_XGOTREF(__pyx_t_8);
       /*try:*/ {
 
-        /* "blacksheep/baseapp.pyx":81
+        /* "blacksheep/baseapp.pyx":77
  * 
  *             try:
  *                 response = await route.handler(request)             # <<<<<<<<<<<<<<
  *             except Exception as exc:
  *                 response = await self.handle_request_handler_exception(request, exc)
  */
-        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_route, __pyx_n_s_handler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L5_error)
+        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_route, __pyx_n_s_handler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_3 = NULL;
         __pyx_t_4 = 0;
@@ -9020,7 +8854,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
           PyObject *__pyx_callargs[2] = {__pyx_t_3, ((PyObject *)__pyx_cur_scope->__pyx_v_request)};
           __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L5_error)
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         }
@@ -9050,19 +8884,19 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
           __pyx_t_8 = __pyx_cur_scope->__pyx_t_2;
           __pyx_cur_scope->__pyx_t_2 = 0;
           __Pyx_XGOTREF(__pyx_t_8);
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 81, __pyx_L5_error)
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 77, __pyx_L5_error)
           __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
         } else {
           __pyx_t_1 = NULL;
-          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 81, __pyx_L5_error)
+          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 77, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_1);
         }
-        if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_10blacksheep_8messages_Response))))) __PYX_ERR(0, 81, __pyx_L5_error)
+        if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_10blacksheep_8messages_Response))))) __PYX_ERR(0, 77, __pyx_L5_error)
         __Pyx_GIVEREF(__pyx_t_1);
         __pyx_cur_scope->__pyx_v_response = ((struct __pyx_obj_10blacksheep_8messages_Response *)__pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "blacksheep/baseapp.pyx":80
+        /* "blacksheep/baseapp.pyx":76
  *             request.route_values = route.values
  * 
  *             try:             # <<<<<<<<<<<<<<
@@ -9079,7 +8913,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "blacksheep/baseapp.pyx":82
+      /* "blacksheep/baseapp.pyx":78
  *             try:
  *                 response = await route.handler(request)
  *             except Exception as exc:             # <<<<<<<<<<<<<<
@@ -9089,7 +8923,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
       __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
       if (__pyx_t_4) {
         __Pyx_AddTraceback("blacksheep.baseapp.BaseApplication.handle", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_2, &__pyx_t_3) < 0) __PYX_ERR(0, 82, __pyx_L7_except_error)
+        if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_2, &__pyx_t_3) < 0) __PYX_ERR(0, 78, __pyx_L7_except_error)
         __Pyx_XGOTREF(__pyx_t_1);
         __Pyx_XGOTREF(__pyx_t_2);
         __Pyx_XGOTREF(__pyx_t_3);
@@ -9098,14 +8932,14 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
         __pyx_cur_scope->__pyx_v_exc = __pyx_t_2;
         /*try:*/ {
 
-          /* "blacksheep/baseapp.pyx":83
+          /* "blacksheep/baseapp.pyx":79
  *                 response = await route.handler(request)
  *             except Exception as exc:
  *                 response = await self.handle_request_handler_exception(request, exc)             # <<<<<<<<<<<<<<
  *         else:
  *             response = await self.exceptions_handlers.get(404)(self, request, None)
  */
-          __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_request_handler_exception); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 83, __pyx_L17_error)
+          __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_request_handler_exception); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 79, __pyx_L17_error)
           __Pyx_GOTREF(__pyx_t_10);
           __pyx_t_11 = NULL;
           __pyx_t_4 = 0;
@@ -9125,7 +8959,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
             PyObject *__pyx_callargs[3] = {__pyx_t_11, ((PyObject *)__pyx_cur_scope->__pyx_v_request), __pyx_cur_scope->__pyx_v_exc};
             __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_10, __pyx_callargs+1-__pyx_t_4, 2+__pyx_t_4);
             __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 83, __pyx_L17_error)
+            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 79, __pyx_L17_error)
             __Pyx_GOTREF(__pyx_t_9);
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
           }
@@ -9170,21 +9004,21 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
             __pyx_t_8 = __pyx_cur_scope->__pyx_t_5;
             __pyx_cur_scope->__pyx_t_5 = 0;
             __Pyx_XGOTREF(__pyx_t_8);
-            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 83, __pyx_L17_error)
+            if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 79, __pyx_L17_error)
             __pyx_t_9 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_9);
           } else {
             __pyx_t_9 = NULL;
-            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_9) < 0) __PYX_ERR(0, 83, __pyx_L17_error)
+            if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_9) < 0) __PYX_ERR(0, 79, __pyx_L17_error)
             __Pyx_GOTREF(__pyx_t_9);
           }
-          if (!(likely(((__pyx_t_9) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_9, __pyx_ptype_10blacksheep_8messages_Response))))) __PYX_ERR(0, 83, __pyx_L17_error)
+          if (!(likely(((__pyx_t_9) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_9, __pyx_ptype_10blacksheep_8messages_Response))))) __PYX_ERR(0, 79, __pyx_L17_error)
           __Pyx_XGOTREF((PyObject *)__pyx_cur_scope->__pyx_v_response);
           __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_response, ((struct __pyx_obj_10blacksheep_8messages_Response *)__pyx_t_9));
           __Pyx_GIVEREF(__pyx_t_9);
           __pyx_t_9 = 0;
         }
 
-        /* "blacksheep/baseapp.pyx":82
+        /* "blacksheep/baseapp.pyx":78
  *             try:
  *                 response = await route.handler(request)
  *             except Exception as exc:             # <<<<<<<<<<<<<<
@@ -9240,7 +9074,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
       }
       goto __pyx_L7_except_error;
 
-      /* "blacksheep/baseapp.pyx":80
+      /* "blacksheep/baseapp.pyx":76
  *             request.route_values = route.values
  * 
  *             try:             # <<<<<<<<<<<<<<
@@ -9261,7 +9095,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
       __pyx_L10_try_end:;
     }
 
-    /* "blacksheep/baseapp.pyx":77
+    /* "blacksheep/baseapp.pyx":73
  *         route = self.router.get_match(request)
  * 
  *         if route:             # <<<<<<<<<<<<<<
@@ -9271,7 +9105,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
     goto __pyx_L4;
   }
 
-  /* "blacksheep/baseapp.pyx":85
+  /* "blacksheep/baseapp.pyx":81
  *                 response = await self.handle_request_handler_exception(request, exc)
  *         else:
  *             response = await self.exceptions_handlers.get(404)(self, request, None)             # <<<<<<<<<<<<<<
@@ -9281,9 +9115,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
   /*else*/ {
     if (unlikely(__pyx_cur_scope->__pyx_v_self->exceptions_handlers == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "get");
-      __PYX_ERR(0, 85, __pyx_L1_error)
+      __PYX_ERR(0, 81, __pyx_L1_error)
     }
-    __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_cur_scope->__pyx_v_self->exceptions_handlers, __pyx_int_404, Py_None); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_cur_scope->__pyx_v_self->exceptions_handlers, __pyx_int_404, Py_None); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_1 = NULL;
     __pyx_t_12 = 0;
@@ -9303,7 +9137,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
       PyObject *__pyx_callargs[4] = {__pyx_t_1, ((PyObject *)__pyx_cur_scope->__pyx_v_self), ((PyObject *)__pyx_cur_scope->__pyx_v_request), Py_None};
       __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_12, 3+__pyx_t_12);
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
@@ -9318,44 +9152,44 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
       __pyx_generator->resume_label = 3;
       return __pyx_r;
       __pyx_L24_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 85, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 81, __pyx_L1_error)
       __pyx_t_3 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_3);
     } else {
       __pyx_t_3 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_3) < 0) __PYX_ERR(0, 85, __pyx_L1_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_3) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
-    if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_10blacksheep_8messages_Response))))) __PYX_ERR(0, 85, __pyx_L1_error)
+    if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_10blacksheep_8messages_Response))))) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_3);
     __pyx_cur_scope->__pyx_v_response = ((struct __pyx_obj_10blacksheep_8messages_Response *)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "blacksheep/baseapp.pyx":86
+    /* "blacksheep/baseapp.pyx":82
  *         else:
  *             response = await self.exceptions_handlers.get(404)(self, request, None)
  *             if not response:             # <<<<<<<<<<<<<<
  *                 response = Response(404)
  *         # if the request handler didn't return an object,
  */
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_cur_scope->__pyx_v_response)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 86, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_cur_scope->__pyx_v_response)); if (unlikely((__pyx_t_5 < 0))) __PYX_ERR(0, 82, __pyx_L1_error)
     __pyx_t_20 = (!__pyx_t_5);
     if (__pyx_t_20) {
 
-      /* "blacksheep/baseapp.pyx":87
+      /* "blacksheep/baseapp.pyx":83
  *             response = await self.exceptions_handlers.get(404)(self, request, None)
  *             if not response:
  *                 response = Response(404)             # <<<<<<<<<<<<<<
  *         # if the request handler didn't return an object,
  *         # and since the request was handled successfully, return success status code No Content
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GOTREF((PyObject *)__pyx_cur_scope->__pyx_v_response);
       __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_response, ((struct __pyx_obj_10blacksheep_8messages_Response *)__pyx_t_3));
       __Pyx_GIVEREF(__pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "blacksheep/baseapp.pyx":86
+      /* "blacksheep/baseapp.pyx":82
  *         else:
  *             response = await self.exceptions_handlers.get(404)(self, request, None)
  *             if not response:             # <<<<<<<<<<<<<<
@@ -9366,7 +9200,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
   }
   __pyx_L4:;
 
-  /* "blacksheep/baseapp.pyx":92
+  /* "blacksheep/baseapp.pyx":88
  *         # for example, a user might return "None" from an handler
  *         # this might be ambiguous, if a programmer thinks to return None for "Not found"
  *         return response or Response(204)             # <<<<<<<<<<<<<<
@@ -9374,14 +9208,14 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
  *     async def handle_request_handler_exception(self, request, exc):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_20 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_cur_scope->__pyx_v_response)); if (unlikely((__pyx_t_20 < 0))) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_20 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_cur_scope->__pyx_v_response)); if (unlikely((__pyx_t_20 < 0))) __PYX_ERR(0, 88, __pyx_L1_error)
   if (!__pyx_t_20) {
   } else {
     __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_response);
     __pyx_t_3 = ((PyObject *)__pyx_cur_scope->__pyx_v_response);
     goto __pyx_L26_bool_binop_done;
   }
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_t_2);
   __pyx_t_3 = __pyx_t_2;
@@ -9392,7 +9226,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":71
+  /* "blacksheep/baseapp.pyx":67
  *             )
  * 
  *     async def handle(self, Request request):             # <<<<<<<<<<<<<<
@@ -9422,7 +9256,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_12generator5(_
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":94
+/* "blacksheep/baseapp.pyx":90
  *         return response or Response(204)
  * 
  *     async def handle_request_handler_exception(self, request, exc):             # <<<<<<<<<<<<<<
@@ -9486,7 +9320,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 94, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 90, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -9494,14 +9328,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 94, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 90, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("handle_request_handler_exception", 1, 2, 2, 1); __PYX_ERR(0, 94, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("handle_request_handler_exception", 1, 2, 2, 1); __PYX_ERR(0, 90, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle_request_handler_exception") < 0)) __PYX_ERR(0, 94, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle_request_handler_exception") < 0)) __PYX_ERR(0, 90, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -9514,7 +9348,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("handle_request_handler_exception", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 94, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("handle_request_handler_exception", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 90, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9553,7 +9387,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_13handle_reque
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 94, __pyx_L1_error)
+    __PYX_ERR(0, 90, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -9567,7 +9401,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_13handle_reque
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_exc);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_exc);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6, __pyx_codeobj__12, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle_request_handler_exception, __pyx_n_s_BaseApplication_handle_request_h, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6, __pyx_codeobj__12, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle_request_handler_exception, __pyx_n_s_BaseApplication_handle_request_h, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -9609,9 +9443,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 90, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":95
+  /* "blacksheep/baseapp.pyx":91
  * 
  *     async def handle_request_handler_exception(self, request, exc):
  *         if isinstance(exc, HTTPException):             # <<<<<<<<<<<<<<
@@ -9621,12 +9455,137 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
   __pyx_t_1 = __Pyx_TypeCheck(__pyx_cur_scope->__pyx_v_exc, __pyx_ptype_10blacksheep_10exceptions_HTTPException); 
   if (__pyx_t_1) {
 
-    /* "blacksheep/baseapp.pyx":96
+    /* "blacksheep/baseapp.pyx":92
  *     async def handle_request_handler_exception(self, request, exc):
  *         if isinstance(exc, HTTPException):
  *             await self.log_handled_exc(request, exc)             # <<<<<<<<<<<<<<
  *             return await self.handle_http_exception(request, exc)
  * 
+ */
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_log_handled_exc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = NULL;
+    __pyx_t_5 = 0;
+    #if CYTHON_UNPACK_METHODS
+    if (likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+        __pyx_t_5 = 1;
+      }
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_request, __pyx_cur_scope->__pyx_v_exc};
+      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 2+__pyx_t_5);
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    }
+    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_XGOTREF(__pyx_r);
+    if (likely(__pyx_r)) {
+      __Pyx_XGIVEREF(__pyx_r);
+      __Pyx_RefNannyFinishContext();
+      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+      /* return from generator, awaiting value */
+      __pyx_generator->resume_label = 1;
+      return __pyx_r;
+      __pyx_L5_resume_from_await:;
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 92, __pyx_L1_error)
+    } else {
+      PyObject* exc_type = __Pyx_PyErr_CurrentExceptionType();
+      if (exc_type) {
+        if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
+        else __PYX_ERR(0, 92, __pyx_L1_error)
+      }
+    }
+
+    /* "blacksheep/baseapp.pyx":93
+ *         if isinstance(exc, HTTPException):
+ *             await self.log_handled_exc(request, exc)
+ *             return await self.handle_http_exception(request, exc)             # <<<<<<<<<<<<<<
+ * 
+ *         if self.is_handled_exception(exc):
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_http_exception); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = NULL;
+    __pyx_t_5 = 0;
+    #if CYTHON_UNPACK_METHODS
+    if (likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+        __pyx_t_5 = 1;
+      }
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_request, __pyx_cur_scope->__pyx_v_exc};
+      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 2+__pyx_t_5);
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    }
+    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_XGOTREF(__pyx_r);
+    if (likely(__pyx_r)) {
+      __Pyx_XGIVEREF(__pyx_r);
+      __Pyx_RefNannyFinishContext();
+      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+      /* return from generator, awaiting value */
+      __pyx_generator->resume_label = 2;
+      return __pyx_r;
+      __pyx_L6_resume_from_await:;
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 93, __pyx_L1_error)
+      __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
+    } else {
+      __pyx_t_2 = NULL;
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 93, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    goto __pyx_L0;
+
+    /* "blacksheep/baseapp.pyx":91
+ * 
+ *     async def handle_request_handler_exception(self, request, exc):
+ *         if isinstance(exc, HTTPException):             # <<<<<<<<<<<<<<
+ *             await self.log_handled_exc(request, exc)
+ *             return await self.handle_http_exception(request, exc)
+ */
+  }
+
+  /* "blacksheep/baseapp.pyx":95
+ *             return await self.handle_http_exception(request, exc)
+ * 
+ *         if self.is_handled_exception(exc):             # <<<<<<<<<<<<<<
+ *             await self.log_handled_exc(request, exc)
+ *         else:
+ */
+  if (!(likely(__Pyx_PyException_Check(__pyx_cur_scope->__pyx_v_exc))||((__pyx_cur_scope->__pyx_v_exc) == Py_None) || __Pyx_RaiseUnexpectedTypeError("Exception", __pyx_cur_scope->__pyx_v_exc))) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_10blacksheep_7baseapp_BaseApplication *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->is_handled_exception(__pyx_cur_scope->__pyx_v_self, ((PyObject*)__pyx_cur_scope->__pyx_v_exc)); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L1_error)
+  if (__pyx_t_1) {
+
+    /* "blacksheep/baseapp.pyx":96
+ * 
+ *         if self.is_handled_exception(exc):
+ *             await self.log_handled_exc(request, exc)             # <<<<<<<<<<<<<<
+ *         else:
+ *             await self.log_unhandled_exc(request, exc)
  */
     __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_log_handled_exc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -9660,9 +9619,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
       __Pyx_RefNannyFinishContext();
       __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
       /* return from generator, awaiting value */
-      __pyx_generator->resume_label = 1;
+      __pyx_generator->resume_label = 3;
       return __pyx_r;
-      __pyx_L5_resume_from_await:;
+      __pyx_L8_resume_from_await:;
       if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 96, __pyx_L1_error)
     } else {
       PyObject* exc_type = __Pyx_PyErr_CurrentExceptionType();
@@ -9672,132 +9631,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
       }
     }
 
-    /* "blacksheep/baseapp.pyx":97
- *         if isinstance(exc, HTTPException):
- *             await self.log_handled_exc(request, exc)
- *             return await self.handle_http_exception(request, exc)             # <<<<<<<<<<<<<<
- * 
- *         if self.is_handled_exception(exc):
- */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_http_exception); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = NULL;
-    __pyx_t_5 = 0;
-    #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-        __pyx_t_5 = 1;
-      }
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_request, __pyx_cur_scope->__pyx_v_exc};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 2+__pyx_t_5);
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    }
-    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XGOTREF(__pyx_r);
-    if (likely(__pyx_r)) {
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-      /* return from generator, awaiting value */
-      __pyx_generator->resume_label = 2;
-      return __pyx_r;
-      __pyx_L6_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 97, __pyx_L1_error)
-      __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
-    } else {
-      __pyx_t_2 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-    }
-    __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    goto __pyx_L0;
-
     /* "blacksheep/baseapp.pyx":95
- * 
- *     async def handle_request_handler_exception(self, request, exc):
- *         if isinstance(exc, HTTPException):             # <<<<<<<<<<<<<<
- *             await self.log_handled_exc(request, exc)
- *             return await self.handle_http_exception(request, exc)
- */
-  }
-
-  /* "blacksheep/baseapp.pyx":99
- *             return await self.handle_http_exception(request, exc)
- * 
- *         if self.is_handled_exception(exc):             # <<<<<<<<<<<<<<
- *             await self.log_handled_exc(request, exc)
- *         else:
- */
-  if (!(likely(__Pyx_PyException_Check(__pyx_cur_scope->__pyx_v_exc))||((__pyx_cur_scope->__pyx_v_exc) == Py_None) || __Pyx_RaiseUnexpectedTypeError("Exception", __pyx_cur_scope->__pyx_v_exc))) __PYX_ERR(0, 99, __pyx_L1_error)
-  __pyx_t_1 = ((struct __pyx_vtabstruct_10blacksheep_7baseapp_BaseApplication *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->is_handled_exception(__pyx_cur_scope->__pyx_v_self, ((PyObject*)__pyx_cur_scope->__pyx_v_exc)); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 99, __pyx_L1_error)
-  if (__pyx_t_1) {
-
-    /* "blacksheep/baseapp.pyx":100
- * 
- *         if self.is_handled_exception(exc):
- *             await self.log_handled_exc(request, exc)             # <<<<<<<<<<<<<<
- *         else:
- *             await self.log_unhandled_exc(request, exc)
- */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_log_handled_exc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = NULL;
-    __pyx_t_5 = 0;
-    #if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-        __pyx_t_5 = 1;
-      }
-    }
-    #endif
-    {
-      PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_request, __pyx_cur_scope->__pyx_v_exc};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 2+__pyx_t_5);
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    }
-    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XGOTREF(__pyx_r);
-    if (likely(__pyx_r)) {
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-      /* return from generator, awaiting value */
-      __pyx_generator->resume_label = 3;
-      return __pyx_r;
-      __pyx_L8_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 100, __pyx_L1_error)
-    } else {
-      PyObject* exc_type = __Pyx_PyErr_CurrentExceptionType();
-      if (exc_type) {
-        if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-        else __PYX_ERR(0, 100, __pyx_L1_error)
-      }
-    }
-
-    /* "blacksheep/baseapp.pyx":99
  *             return await self.handle_http_exception(request, exc)
  * 
  *         if self.is_handled_exception(exc):             # <<<<<<<<<<<<<<
@@ -9807,7 +9641,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
     goto __pyx_L7;
   }
 
-  /* "blacksheep/baseapp.pyx":102
+  /* "blacksheep/baseapp.pyx":98
  *             await self.log_handled_exc(request, exc)
  *         else:
  *             await self.log_unhandled_exc(request, exc)             # <<<<<<<<<<<<<<
@@ -9815,7 +9649,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
  *         return await self.handle_exception(request, exc)
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_log_unhandled_exc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_log_unhandled_exc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     __pyx_t_5 = 0;
@@ -9835,7 +9669,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
       PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_request, __pyx_cur_scope->__pyx_v_exc};
       __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 2+__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
@@ -9850,18 +9684,18 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
       __pyx_generator->resume_label = 4;
       return __pyx_r;
       __pyx_L9_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 102, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 98, __pyx_L1_error)
     } else {
       PyObject* exc_type = __Pyx_PyErr_CurrentExceptionType();
       if (exc_type) {
         if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-        else __PYX_ERR(0, 102, __pyx_L1_error)
+        else __PYX_ERR(0, 98, __pyx_L1_error)
       }
     }
   }
   __pyx_L7:;
 
-  /* "blacksheep/baseapp.pyx":104
+  /* "blacksheep/baseapp.pyx":100
  *             await self.log_unhandled_exc(request, exc)
  * 
  *         return await self.handle_exception(request, exc)             # <<<<<<<<<<<<<<
@@ -9869,7 +9703,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
  *     cdef object get_http_exception_handler(self, HTTPException http_exception):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_exception); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_exception); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -9889,7 +9723,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
     PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_request, __pyx_cur_scope->__pyx_v_exc};
     __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 2+__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
@@ -9904,11 +9738,11 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
     __pyx_generator->resume_label = 5;
     return __pyx_r;
     __pyx_L10_resume_from_await:;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 104, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 100, __pyx_L1_error)
     __pyx_t_2 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_2);
   } else {
     __pyx_t_2 = NULL;
-    if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 104, __pyx_L1_error)
+    if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_2) < 0) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_2);
@@ -9916,7 +9750,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":94
+  /* "blacksheep/baseapp.pyx":90
  *         return response or Response(204)
  * 
  *     async def handle_request_handler_exception(self, request, exc):             # <<<<<<<<<<<<<<
@@ -9942,7 +9776,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_15generator6(_
   return __pyx_r;
 }
 
-/* "blacksheep/baseapp.pyx":106
+/* "blacksheep/baseapp.pyx":102
  *         return await self.handle_exception(request, exc)
  * 
  *     cdef object get_http_exception_handler(self, HTTPException http_exception):             # <<<<<<<<<<<<<<
@@ -9968,7 +9802,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_http_exception_handler", 1);
 
-  /* "blacksheep/baseapp.pyx":107
+  /* "blacksheep/baseapp.pyx":103
  * 
  *     cdef object get_http_exception_handler(self, HTTPException http_exception):
  *         try:             # <<<<<<<<<<<<<<
@@ -9984,7 +9818,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "blacksheep/baseapp.pyx":108
+      /* "blacksheep/baseapp.pyx":104
  *     cdef object get_http_exception_handler(self, HTTPException http_exception):
  *         try:
  *             return self.exceptions_handlers[type(http_exception)]             # <<<<<<<<<<<<<<
@@ -9994,15 +9828,15 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
       __Pyx_XDECREF(__pyx_r);
       if (unlikely(__pyx_v_self->exceptions_handlers == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 108, __pyx_L3_error)
+        __PYX_ERR(0, 104, __pyx_L3_error)
       }
-      __pyx_t_4 = __Pyx_PyDict_GetItem(__pyx_v_self->exceptions_handlers, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_http_exception)))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L3_error)
+      __pyx_t_4 = __Pyx_PyDict_GetItem(__pyx_v_self->exceptions_handlers, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_http_exception)))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 104, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
       goto __pyx_L7_try_return;
 
-      /* "blacksheep/baseapp.pyx":107
+      /* "blacksheep/baseapp.pyx":103
  * 
  *     cdef object get_http_exception_handler(self, HTTPException http_exception):
  *         try:             # <<<<<<<<<<<<<<
@@ -10013,7 +9847,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
     __pyx_L3_error:;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "blacksheep/baseapp.pyx":109
+    /* "blacksheep/baseapp.pyx":105
  *         try:
  *             return self.exceptions_handlers[type(http_exception)]
  *         except KeyError:             # <<<<<<<<<<<<<<
@@ -10023,12 +9857,12 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
     __pyx_t_5 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
     if (__pyx_t_5) {
       __Pyx_AddTraceback("blacksheep.baseapp.BaseApplication.get_http_exception_handler", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) __PYX_ERR(0, 109, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_7) < 0) __PYX_ERR(0, 105, __pyx_L5_except_error)
       __Pyx_XGOTREF(__pyx_t_4);
       __Pyx_XGOTREF(__pyx_t_6);
       __Pyx_XGOTREF(__pyx_t_7);
 
-      /* "blacksheep/baseapp.pyx":110
+      /* "blacksheep/baseapp.pyx":106
  *             return self.exceptions_handlers[type(http_exception)]
  *         except KeyError:
  *             return self.exceptions_handlers.get(http_exception.status, common_http_exception_handler)             # <<<<<<<<<<<<<<
@@ -10038,13 +9872,13 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
       __Pyx_XDECREF(__pyx_r);
       if (unlikely(__pyx_v_self->exceptions_handlers == Py_None)) {
         PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "get");
-        __PYX_ERR(0, 110, __pyx_L5_except_error)
+        __PYX_ERR(0, 106, __pyx_L5_except_error)
       }
-      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_http_exception->status); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 110, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_http_exception->status); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 106, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_common_http_exception_handler); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 110, __pyx_L5_except_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_common_http_exception_handler); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 106, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyDict_GetItemDefault(__pyx_v_self->exceptions_handlers, __pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 110, __pyx_L5_except_error)
+      __pyx_t_10 = __Pyx_PyDict_GetItemDefault(__pyx_v_self->exceptions_handlers, __pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 106, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -10057,7 +9891,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
     }
     goto __pyx_L5_except_error;
 
-    /* "blacksheep/baseapp.pyx":107
+    /* "blacksheep/baseapp.pyx":103
  * 
  *     cdef object get_http_exception_handler(self, HTTPException http_exception):
  *         try:             # <<<<<<<<<<<<<<
@@ -10084,7 +9918,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
     goto __pyx_L0;
   }
 
-  /* "blacksheep/baseapp.pyx":106
+  /* "blacksheep/baseapp.pyx":102
  *         return await self.handle_exception(request, exc)
  * 
  *     cdef object get_http_exception_handler(self, HTTPException http_exception):             # <<<<<<<<<<<<<<
@@ -10108,7 +9942,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_http_except
   return __pyx_r;
 }
 
-/* "blacksheep/baseapp.pyx":112
+/* "blacksheep/baseapp.pyx":108
  *             return self.exceptions_handlers.get(http_exception.status, common_http_exception_handler)
  * 
  *     cdef bint is_handled_exception(self, Exception exception):             # <<<<<<<<<<<<<<
@@ -10132,14 +9966,14 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("is_handled_exception", 1);
 
-  /* "blacksheep/baseapp.pyx":113
+  /* "blacksheep/baseapp.pyx":109
  * 
  *     cdef bint is_handled_exception(self, Exception exception):
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):             # <<<<<<<<<<<<<<
  *             if current_class_in_hierarchy in self.exceptions_handlers:
  *                 return True
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_get_class_instance_hierarchy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_get_class_instance_hierarchy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -10159,7 +9993,7 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
     PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_exception};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
@@ -10168,9 +10002,9 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
     __pyx_t_5 = 0;
     __pyx_t_6 = NULL;
   } else {
-    __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+    __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 113, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 109, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -10179,28 +10013,28 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
           #if !CYTHON_ASSUME_SAFE_MACROS
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 113, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 109, __pyx_L1_error)
           #endif
           if (__pyx_t_5 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely((0 < 0))) __PYX_ERR(0, 113, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely((0 < 0))) __PYX_ERR(0, 109, __pyx_L1_error)
         #else
-        __pyx_t_1 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
           #if !CYTHON_ASSUME_SAFE_MACROS
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 113, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 109, __pyx_L1_error)
           #endif
           if (__pyx_t_5 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely((0 < 0))) __PYX_ERR(0, 113, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely((0 < 0))) __PYX_ERR(0, 109, __pyx_L1_error)
         #else
-        __pyx_t_1 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -10210,7 +10044,7 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 113, __pyx_L1_error)
+          else __PYX_ERR(0, 109, __pyx_L1_error)
         }
         break;
       }
@@ -10219,7 +10053,7 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
     __Pyx_XDECREF_SET(__pyx_v_current_class_in_hierarchy, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "blacksheep/baseapp.pyx":114
+    /* "blacksheep/baseapp.pyx":110
  *     cdef bint is_handled_exception(self, Exception exception):
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):
  *             if current_class_in_hierarchy in self.exceptions_handlers:             # <<<<<<<<<<<<<<
@@ -10228,12 +10062,12 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
  */
     if (unlikely(__pyx_v_self->exceptions_handlers == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-      __PYX_ERR(0, 114, __pyx_L1_error)
+      __PYX_ERR(0, 110, __pyx_L1_error)
     }
-    __pyx_t_7 = (__Pyx_PyDict_ContainsTF(__pyx_v_current_class_in_hierarchy, __pyx_v_self->exceptions_handlers, Py_EQ)); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 114, __pyx_L1_error)
+    __pyx_t_7 = (__Pyx_PyDict_ContainsTF(__pyx_v_current_class_in_hierarchy, __pyx_v_self->exceptions_handlers, Py_EQ)); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 110, __pyx_L1_error)
     if (__pyx_t_7) {
 
-      /* "blacksheep/baseapp.pyx":115
+      /* "blacksheep/baseapp.pyx":111
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):
  *             if current_class_in_hierarchy in self.exceptions_handlers:
  *                 return True             # <<<<<<<<<<<<<<
@@ -10244,7 +10078,7 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       goto __pyx_L0;
 
-      /* "blacksheep/baseapp.pyx":114
+      /* "blacksheep/baseapp.pyx":110
  *     cdef bint is_handled_exception(self, Exception exception):
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):
  *             if current_class_in_hierarchy in self.exceptions_handlers:             # <<<<<<<<<<<<<<
@@ -10253,7 +10087,7 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
  */
     }
 
-    /* "blacksheep/baseapp.pyx":113
+    /* "blacksheep/baseapp.pyx":109
  * 
  *     cdef bint is_handled_exception(self, Exception exception):
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):             # <<<<<<<<<<<<<<
@@ -10263,7 +10097,7 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "blacksheep/baseapp.pyx":116
+  /* "blacksheep/baseapp.pyx":112
  *             if current_class_in_hierarchy in self.exceptions_handlers:
  *                 return True
  *         return False             # <<<<<<<<<<<<<<
@@ -10273,7 +10107,7 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "blacksheep/baseapp.pyx":112
+  /* "blacksheep/baseapp.pyx":108
  *             return self.exceptions_handlers.get(http_exception.status, common_http_exception_handler)
  * 
  *     cdef bint is_handled_exception(self, Exception exception):             # <<<<<<<<<<<<<<
@@ -10294,7 +10128,7 @@ static int __pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception(
   return __pyx_r;
 }
 
-/* "blacksheep/baseapp.pyx":118
+/* "blacksheep/baseapp.pyx":114
  *         return False
  * 
  *     cdef object get_exception_handler(self, Exception exception):             # <<<<<<<<<<<<<<
@@ -10318,14 +10152,14 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_exception_handler", 1);
 
-  /* "blacksheep/baseapp.pyx":119
+  /* "blacksheep/baseapp.pyx":115
  * 
  *     cdef object get_exception_handler(self, Exception exception):
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):             # <<<<<<<<<<<<<<
  *             if current_class_in_hierarchy in self.exceptions_handlers:
  *                 return self.exceptions_handlers[current_class_in_hierarchy]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_get_class_instance_hierarchy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_get_class_instance_hierarchy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -10345,7 +10179,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
     PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_exception};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
@@ -10354,9 +10188,9 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
     __pyx_t_5 = 0;
     __pyx_t_6 = NULL;
   } else {
-    __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
+    __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 119, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetIterNextFunc(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 115, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -10365,28 +10199,28 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
         {
           Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
           #if !CYTHON_ASSUME_SAFE_MACROS
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 119, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 115, __pyx_L1_error)
           #endif
           if (__pyx_t_5 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely((0 < 0))) __PYX_ERR(0, 119, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely((0 < 0))) __PYX_ERR(0, 115, __pyx_L1_error)
         #else
-        __pyx_t_1 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         {
           Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_2);
           #if !CYTHON_ASSUME_SAFE_MACROS
-          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 119, __pyx_L1_error)
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 115, __pyx_L1_error)
           #endif
           if (__pyx_t_5 >= __pyx_temp) break;
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely((0 < 0))) __PYX_ERR(0, 119, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely((0 < 0))) __PYX_ERR(0, 115, __pyx_L1_error)
         #else
-        __pyx_t_1 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -10396,7 +10230,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 119, __pyx_L1_error)
+          else __PYX_ERR(0, 115, __pyx_L1_error)
         }
         break;
       }
@@ -10405,7 +10239,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
     __Pyx_XDECREF_SET(__pyx_v_current_class_in_hierarchy, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "blacksheep/baseapp.pyx":120
+    /* "blacksheep/baseapp.pyx":116
  *     cdef object get_exception_handler(self, Exception exception):
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):
  *             if current_class_in_hierarchy in self.exceptions_handlers:             # <<<<<<<<<<<<<<
@@ -10414,12 +10248,12 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
  */
     if (unlikely(__pyx_v_self->exceptions_handlers == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-      __PYX_ERR(0, 120, __pyx_L1_error)
+      __PYX_ERR(0, 116, __pyx_L1_error)
     }
-    __pyx_t_7 = (__Pyx_PyDict_ContainsTF(__pyx_v_current_class_in_hierarchy, __pyx_v_self->exceptions_handlers, Py_EQ)); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_7 = (__Pyx_PyDict_ContainsTF(__pyx_v_current_class_in_hierarchy, __pyx_v_self->exceptions_handlers, Py_EQ)); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 116, __pyx_L1_error)
     if (__pyx_t_7) {
 
-      /* "blacksheep/baseapp.pyx":121
+      /* "blacksheep/baseapp.pyx":117
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):
  *             if current_class_in_hierarchy in self.exceptions_handlers:
  *                 return self.exceptions_handlers[current_class_in_hierarchy]             # <<<<<<<<<<<<<<
@@ -10429,16 +10263,16 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
       __Pyx_XDECREF(__pyx_r);
       if (unlikely(__pyx_v_self->exceptions_handlers == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 121, __pyx_L1_error)
+        __PYX_ERR(0, 117, __pyx_L1_error)
       }
-      __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_self->exceptions_handlers, __pyx_v_current_class_in_hierarchy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_self->exceptions_handlers, __pyx_v_current_class_in_hierarchy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_r = __pyx_t_1;
       __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       goto __pyx_L0;
 
-      /* "blacksheep/baseapp.pyx":120
+      /* "blacksheep/baseapp.pyx":116
  *     cdef object get_exception_handler(self, Exception exception):
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):
  *             if current_class_in_hierarchy in self.exceptions_handlers:             # <<<<<<<<<<<<<<
@@ -10447,7 +10281,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
  */
     }
 
-    /* "blacksheep/baseapp.pyx":119
+    /* "blacksheep/baseapp.pyx":115
  * 
  *     cdef object get_exception_handler(self, Exception exception):
  *         for current_class_in_hierarchy in get_class_instance_hierarchy(exception):             # <<<<<<<<<<<<<<
@@ -10457,7 +10291,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "blacksheep/baseapp.pyx":123
+  /* "blacksheep/baseapp.pyx":119
  *                 return self.exceptions_handlers[current_class_in_hierarchy]
  * 
  *         return None             # <<<<<<<<<<<<<<
@@ -10468,7 +10302,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
-  /* "blacksheep/baseapp.pyx":118
+  /* "blacksheep/baseapp.pyx":114
  *         return False
  * 
  *     cdef object get_exception_handler(self, Exception exception):             # <<<<<<<<<<<<<<
@@ -10491,7 +10325,7 @@ static PyObject *__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_h
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":125
+/* "blacksheep/baseapp.pyx":121
  *         return None
  * 
  *     async def handle_internal_server_error(self, Request request, Exception exc):             # <<<<<<<<<<<<<<
@@ -10556,7 +10390,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 125, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -10564,14 +10398,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 125, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("handle_internal_server_error", 1, 2, 2, 1); __PYX_ERR(0, 125, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("handle_internal_server_error", 1, 2, 2, 1); __PYX_ERR(0, 121, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle_internal_server_error") < 0)) __PYX_ERR(0, 125, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle_internal_server_error") < 0)) __PYX_ERR(0, 121, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -10584,7 +10418,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("handle_internal_server_error", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 125, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("handle_internal_server_error", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 121, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -10598,8 +10432,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 125, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_exc), (&((PyTypeObject*)PyExc_Exception)[0]), 1, "exc", 0))) __PYX_ERR(0, 125, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 121, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_exc), (&((PyTypeObject*)PyExc_Exception)[0]), 1, "exc", 0))) __PYX_ERR(0, 121, __pyx_L1_error)
   __pyx_r = __pyx_pf_10blacksheep_7baseapp_15BaseApplication_16handle_internal_server_error(((struct __pyx_obj_10blacksheep_7baseapp_BaseApplication *)__pyx_v_self), __pyx_v_request, __pyx_v_exc);
 
   /* function exit code */
@@ -10629,7 +10463,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_16handle_inter
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 125, __pyx_L1_error)
+    __PYX_ERR(0, 121, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -10643,7 +10477,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_16handle_inter
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_exc);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_exc);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7, __pyx_codeobj__13, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle_internal_server_error, __pyx_n_s_BaseApplication_handle_internal, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 125, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7, __pyx_codeobj__13, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle_internal_server_error, __pyx_n_s_BaseApplication_handle_internal, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -10687,9 +10521,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 125, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 121, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":129
+  /* "blacksheep/baseapp.pyx":125
  *         Handles an unhandled exception.
  *         """
  *         if 500 in self.exceptions_handlers:             # <<<<<<<<<<<<<<
@@ -10698,12 +10532,12 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
  */
   if (unlikely(__pyx_cur_scope->__pyx_v_self->exceptions_handlers == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 129, __pyx_L1_error)
+    __PYX_ERR(0, 125, __pyx_L1_error)
   }
-  __pyx_t_1 = (__Pyx_PyDict_ContainsTF(__pyx_int_500, __pyx_cur_scope->__pyx_v_self->exceptions_handlers, Py_EQ)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyDict_ContainsTF(__pyx_int_500, __pyx_cur_scope->__pyx_v_self->exceptions_handlers, Py_EQ)); if (unlikely((__pyx_t_1 < 0))) __PYX_ERR(0, 125, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "blacksheep/baseapp.pyx":132
+    /* "blacksheep/baseapp.pyx":128
  *             # give a chance to run to the custom exception handler - but if it
  *             # fails, handle the failure (otherwise the
  *             try:             # <<<<<<<<<<<<<<
@@ -10717,7 +10551,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
       __Pyx_XGOTREF(__pyx_t_4);
       /*try:*/ {
 
-        /* "blacksheep/baseapp.pyx":133
+        /* "blacksheep/baseapp.pyx":129
  *             # fails, handle the failure (otherwise the
  *             try:
  *                 return await self.exceptions_handlers[500](self, request, exc)             # <<<<<<<<<<<<<<
@@ -10727,9 +10561,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
         __Pyx_XDECREF(__pyx_r);
         if (unlikely(__pyx_cur_scope->__pyx_v_self->exceptions_handlers == Py_None)) {
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-          __PYX_ERR(0, 133, __pyx_L5_error)
+          __PYX_ERR(0, 129, __pyx_L5_error)
         }
-        __pyx_t_6 = __Pyx_PyDict_GetItem(__pyx_cur_scope->__pyx_v_self->exceptions_handlers, __pyx_int_500); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 133, __pyx_L5_error)
+        __pyx_t_6 = __Pyx_PyDict_GetItem(__pyx_cur_scope->__pyx_v_self->exceptions_handlers, __pyx_int_500); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 129, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = NULL;
         __pyx_t_8 = 0;
@@ -10749,7 +10583,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
           PyObject *__pyx_callargs[4] = {__pyx_t_7, ((PyObject *)__pyx_cur_scope->__pyx_v_self), ((PyObject *)__pyx_cur_scope->__pyx_v_request), __pyx_cur_scope->__pyx_v_exc};
           __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_8, 3+__pyx_t_8);
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 133, __pyx_L5_error)
+          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 129, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
@@ -10779,18 +10613,18 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
           __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
           __pyx_cur_scope->__pyx_t_2 = 0;
           __Pyx_XGOTREF(__pyx_t_4);
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 133, __pyx_L5_error)
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 129, __pyx_L5_error)
           __pyx_t_5 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_5);
         } else {
           __pyx_t_5 = NULL;
-          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 133, __pyx_L5_error)
+          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_5) < 0) __PYX_ERR(0, 129, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_5);
         }
         __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         goto __pyx_L9_try_return;
 
-        /* "blacksheep/baseapp.pyx":132
+        /* "blacksheep/baseapp.pyx":128
  *             # give a chance to run to the custom exception handler - but if it
  *             # fails, handle the failure (otherwise the
  *             try:             # <<<<<<<<<<<<<<
@@ -10803,7 +10637,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "blacksheep/baseapp.pyx":134
+      /* "blacksheep/baseapp.pyx":130
  *             try:
  *                 return await self.exceptions_handlers[500](self, request, exc)
  *             except Exception:             # <<<<<<<<<<<<<<
@@ -10813,19 +10647,19 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
       __pyx_t_8 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
       if (__pyx_t_8) {
         __Pyx_AddTraceback("blacksheep.baseapp.BaseApplication.handle_internal_server_error", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_6, &__pyx_t_7) < 0) __PYX_ERR(0, 134, __pyx_L7_except_error)
+        if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_6, &__pyx_t_7) < 0) __PYX_ERR(0, 130, __pyx_L7_except_error)
         __Pyx_XGOTREF(__pyx_t_5);
         __Pyx_XGOTREF(__pyx_t_6);
         __Pyx_XGOTREF(__pyx_t_7);
 
-        /* "blacksheep/baseapp.pyx":135
+        /* "blacksheep/baseapp.pyx":131
  *                 return await self.exceptions_handlers[500](self, request, exc)
  *             except Exception:
  *                 self.logger.exception(             # <<<<<<<<<<<<<<
  *                     "An exception occurred while trying to apply a custom 500 Internal Server Error handler!"
  *                 )
  */
-        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->logger, __pyx_n_s_exception); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 135, __pyx_L7_except_error)
+        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self->logger, __pyx_n_s_exception); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 131, __pyx_L7_except_error)
         __Pyx_GOTREF(__pyx_t_10);
         __pyx_t_11 = NULL;
         __pyx_t_8 = 0;
@@ -10845,13 +10679,13 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
           PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_kp_u_An_exception_occurred_while_tryi};
           __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_10, __pyx_callargs+1-__pyx_t_8, 1+__pyx_t_8);
           __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 135, __pyx_L7_except_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 131, __pyx_L7_except_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         }
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-        /* "blacksheep/baseapp.pyx":138
+        /* "blacksheep/baseapp.pyx":134
  *                     "An exception occurred while trying to apply a custom 500 Internal Server Error handler!"
  *                 )
  *                 return Response(500, content=TextContent('Internal Server Error'))             # <<<<<<<<<<<<<<
@@ -10859,13 +10693,13 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
  *             return self.server_error_details_handler.produce_response(request, exc)
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 138, __pyx_L7_except_error)
+        __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 134, __pyx_L7_except_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_10 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8contents_TextContent), __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 138, __pyx_L7_except_error)
+        __pyx_t_10 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8contents_TextContent), __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 134, __pyx_L7_except_error)
         __Pyx_GOTREF(__pyx_t_10);
-        if (PyDict_SetItem(__pyx_t_9, __pyx_n_s_content, __pyx_t_10) < 0) __PYX_ERR(0, 138, __pyx_L7_except_error)
+        if (PyDict_SetItem(__pyx_t_9, __pyx_n_s_content, __pyx_t_10) < 0) __PYX_ERR(0, 134, __pyx_L7_except_error)
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        __pyx_t_10 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__14, __pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 138, __pyx_L7_except_error)
+        __pyx_t_10 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__14, __pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 134, __pyx_L7_except_error)
         __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_10);
@@ -10877,7 +10711,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
       }
       goto __pyx_L7_except_error;
 
-      /* "blacksheep/baseapp.pyx":132
+      /* "blacksheep/baseapp.pyx":128
  *             # give a chance to run to the custom exception handler - but if it
  *             # fails, handle the failure (otherwise the
  *             try:             # <<<<<<<<<<<<<<
@@ -10904,7 +10738,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
       goto __pyx_L0;
     }
 
-    /* "blacksheep/baseapp.pyx":129
+    /* "blacksheep/baseapp.pyx":125
  *         Handles an unhandled exception.
  *         """
  *         if 500 in self.exceptions_handlers:             # <<<<<<<<<<<<<<
@@ -10913,7 +10747,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
  */
   }
 
-  /* "blacksheep/baseapp.pyx":139
+  /* "blacksheep/baseapp.pyx":135
  *                 )
  *                 return Response(500, content=TextContent('Internal Server Error'))
  *         if self.show_error_details:             # <<<<<<<<<<<<<<
@@ -10922,7 +10756,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
  */
   if (__pyx_cur_scope->__pyx_v_self->show_error_details) {
 
-    /* "blacksheep/baseapp.pyx":140
+    /* "blacksheep/baseapp.pyx":136
  *                 return Response(500, content=TextContent('Internal Server Error'))
  *         if self.show_error_details:
  *             return self.server_error_details_handler.produce_response(request, exc)             # <<<<<<<<<<<<<<
@@ -10930,9 +10764,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_server_error_details_handler); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 140, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_server_error_details_handler); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_produce_response); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_produce_response); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -10953,7 +10787,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
       PyObject *__pyx_callargs[3] = {__pyx_t_6, ((PyObject *)__pyx_cur_scope->__pyx_v_request), __pyx_cur_scope->__pyx_v_exc};
       __pyx_t_7 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_8, 2+__pyx_t_8);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 136, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -10961,7 +10795,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L0;
 
-    /* "blacksheep/baseapp.pyx":139
+    /* "blacksheep/baseapp.pyx":135
  *                 )
  *                 return Response(500, content=TextContent('Internal Server Error'))
  *         if self.show_error_details:             # <<<<<<<<<<<<<<
@@ -10970,7 +10804,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
  */
   }
 
-  /* "blacksheep/baseapp.pyx":141
+  /* "blacksheep/baseapp.pyx":137
  *         if self.show_error_details:
  *             return self.server_error_details_handler.produce_response(request, exc)
  *         return Response(500, content=TextContent("Internal server error."))             # <<<<<<<<<<<<<<
@@ -10978,13 +10812,13 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8contents_TextContent), __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8contents_TextContent), __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_content, __pyx_t_5) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_content, __pyx_t_5) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__14, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10blacksheep_8messages_Response), __pyx_tuple__14, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_5);
@@ -10992,7 +10826,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":125
+  /* "blacksheep/baseapp.pyx":121
  *         return None
  * 
  *     async def handle_internal_server_error(self, Request request, Exception exc):             # <<<<<<<<<<<<<<
@@ -11022,7 +10856,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_18generator7(_
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":143
+/* "blacksheep/baseapp.pyx":139
  *         return Response(500, content=TextContent("Internal server error."))
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):             # <<<<<<<<<<<<<<
@@ -11089,7 +10923,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 139, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -11097,9 +10931,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 139, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("_apply_exception_handler", 1, 3, 3, 1); __PYX_ERR(0, 143, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_apply_exception_handler", 1, 3, 3, 1); __PYX_ERR(0, 139, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -11107,14 +10941,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 139, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("_apply_exception_handler", 1, 3, 3, 2); __PYX_ERR(0, 143, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_apply_exception_handler", 1, 3, 3, 2); __PYX_ERR(0, 139, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "_apply_exception_handler") < 0)) __PYX_ERR(0, 143, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "_apply_exception_handler") < 0)) __PYX_ERR(0, 139, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -11129,7 +10963,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_apply_exception_handler", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 143, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_apply_exception_handler", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 139, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11143,8 +10977,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 143, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_exc), (&((PyTypeObject*)PyExc_Exception)[0]), 1, "exc", 0))) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 139, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_exc), (&((PyTypeObject*)PyExc_Exception)[0]), 1, "exc", 0))) __PYX_ERR(0, 139, __pyx_L1_error)
   __pyx_r = __pyx_pf_10blacksheep_7baseapp_15BaseApplication_19_apply_exception_handler(((struct __pyx_obj_10blacksheep_7baseapp_BaseApplication *)__pyx_v_self), __pyx_v_request, __pyx_v_exc, __pyx_v_exception_handler);
 
   /* function exit code */
@@ -11174,7 +11008,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_19_apply_excep
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 143, __pyx_L1_error)
+    __PYX_ERR(0, 139, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -11191,7 +11025,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_19_apply_excep
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_exception_handler);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_exception_handler);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8, __pyx_codeobj__17, (PyObject *) __pyx_cur_scope, __pyx_n_s_apply_exception_handler, __pyx_n_s_BaseApplication__apply_exception, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 143, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8, __pyx_codeobj__17, (PyObject *) __pyx_cur_scope, __pyx_n_s_apply_exception_handler, __pyx_n_s_BaseApplication__apply_exception, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -11244,9 +11078,9 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 139, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":144
+  /* "blacksheep/baseapp.pyx":140
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):
  *         try:             # <<<<<<<<<<<<<<
@@ -11260,7 +11094,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "blacksheep/baseapp.pyx":145
+      /* "blacksheep/baseapp.pyx":141
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):
  *         try:
  *             return await exception_handler(self, request, exc)             # <<<<<<<<<<<<<<
@@ -11287,7 +11121,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
         PyObject *__pyx_callargs[4] = {__pyx_t_6, ((PyObject *)__pyx_cur_scope->__pyx_v_self), ((PyObject *)__pyx_cur_scope->__pyx_v_request), __pyx_cur_scope->__pyx_v_exc};
         __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_7, 3+__pyx_t_7);
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 145, __pyx_L4_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       }
@@ -11317,18 +11151,18 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
         __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
         __pyx_cur_scope->__pyx_t_2 = 0;
         __Pyx_XGOTREF(__pyx_t_3);
-        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 145, __pyx_L4_error)
+        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 141, __pyx_L4_error)
         __pyx_t_4 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_4);
       } else {
         __pyx_t_4 = NULL;
-        if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 145, __pyx_L4_error)
+        if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_4) < 0) __PYX_ERR(0, 141, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_4);
       }
       __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       goto __pyx_L8_try_return;
 
-      /* "blacksheep/baseapp.pyx":144
+      /* "blacksheep/baseapp.pyx":140
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):
  *         try:             # <<<<<<<<<<<<<<
@@ -11341,7 +11175,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "blacksheep/baseapp.pyx":146
+    /* "blacksheep/baseapp.pyx":142
  *         try:
  *             return await exception_handler(self, request, exc)
  *         except Exception as server_ex:             # <<<<<<<<<<<<<<
@@ -11351,7 +11185,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
     __pyx_t_7 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_7) {
       __Pyx_AddTraceback("blacksheep.baseapp.BaseApplication._apply_exception_handler", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_5, &__pyx_t_6) < 0) __PYX_ERR(0, 146, __pyx_L6_except_error)
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_5, &__pyx_t_6) < 0) __PYX_ERR(0, 142, __pyx_L6_except_error)
       __Pyx_XGOTREF(__pyx_t_4);
       __Pyx_XGOTREF(__pyx_t_5);
       __Pyx_XGOTREF(__pyx_t_6);
@@ -11360,7 +11194,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
       __pyx_cur_scope->__pyx_v_server_ex = __pyx_t_5;
       /*try:*/ {
 
-        /* "blacksheep/baseapp.pyx":147
+        /* "blacksheep/baseapp.pyx":143
  *             return await exception_handler(self, request, exc)
  *         except Exception as server_ex:
  *             return await self.handle_exception(request, server_ex)             # <<<<<<<<<<<<<<
@@ -11368,7 +11202,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_exception); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 147, __pyx_L16_error)
+        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_exception); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 143, __pyx_L16_error)
         __Pyx_GOTREF(__pyx_t_9);
         __pyx_t_10 = NULL;
         __pyx_t_7 = 0;
@@ -11388,7 +11222,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
           PyObject *__pyx_callargs[3] = {__pyx_t_10, ((PyObject *)__pyx_cur_scope->__pyx_v_request), __pyx_cur_scope->__pyx_v_server_ex};
           __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_7, 2+__pyx_t_7);
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 147, __pyx_L16_error)
+          if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 143, __pyx_L16_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
@@ -11433,11 +11267,11 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
           __pyx_t_6 = __pyx_cur_scope->__pyx_t_5;
           __pyx_cur_scope->__pyx_t_5 = 0;
           __Pyx_XGOTREF(__pyx_t_6);
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 147, __pyx_L16_error)
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 143, __pyx_L16_error)
           __pyx_t_8 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_8);
         } else {
           __pyx_t_8 = NULL;
-          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_8) < 0) __PYX_ERR(0, 147, __pyx_L16_error)
+          if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_8) < 0) __PYX_ERR(0, 143, __pyx_L16_error)
           __Pyx_GOTREF(__pyx_t_8);
         }
         __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_8);
@@ -11448,7 +11282,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
         goto __pyx_L15_return;
       }
 
-      /* "blacksheep/baseapp.pyx":146
+      /* "blacksheep/baseapp.pyx":142
  *         try:
  *             return await exception_handler(self, request, exc)
  *         except Exception as server_ex:             # <<<<<<<<<<<<<<
@@ -11524,7 +11358,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
     }
     goto __pyx_L6_except_error;
 
-    /* "blacksheep/baseapp.pyx":144
+    /* "blacksheep/baseapp.pyx":140
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):
  *         try:             # <<<<<<<<<<<<<<
@@ -11552,7 +11386,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":143
+  /* "blacksheep/baseapp.pyx":139
  *         return Response(500, content=TextContent("Internal server error."))
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):             # <<<<<<<<<<<<<<
@@ -11582,7 +11416,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_21generator8(_
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":149
+/* "blacksheep/baseapp.pyx":145
  *             return await self.handle_exception(request, server_ex)
  * 
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
@@ -11646,7 +11480,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 149, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 145, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -11654,14 +11488,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 149, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 145, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("handle_http_exception", 1, 2, 2, 1); __PYX_ERR(0, 149, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("handle_http_exception", 1, 2, 2, 1); __PYX_ERR(0, 145, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle_http_exception") < 0)) __PYX_ERR(0, 149, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle_http_exception") < 0)) __PYX_ERR(0, 145, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -11674,7 +11508,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("handle_http_exception", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 149, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("handle_http_exception", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 145, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -11688,8 +11522,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_http_exception), __pyx_ptype_10blacksheep_10exceptions_HTTPException, 1, "http_exception", 0))) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_request), __pyx_ptype_10blacksheep_8messages_Request, 1, "request", 0))) __PYX_ERR(0, 145, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_http_exception), __pyx_ptype_10blacksheep_10exceptions_HTTPException, 1, "http_exception", 0))) __PYX_ERR(0, 145, __pyx_L1_error)
   __pyx_r = __pyx_pf_10blacksheep_7baseapp_15BaseApplication_22handle_http_exception(((struct __pyx_obj_10blacksheep_7baseapp_BaseApplication *)__pyx_v_self), __pyx_v_request, __pyx_v_http_exception);
 
   /* function exit code */
@@ -11719,7 +11553,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_22handle_http_
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 149, __pyx_L1_error)
+    __PYX_ERR(0, 145, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -11733,7 +11567,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_22handle_http_
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_http_exception);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_http_exception);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9, __pyx_codeobj__18, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle_http_exception, __pyx_n_s_BaseApplication_handle_http_exce, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 149, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9, __pyx_codeobj__18, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle_http_exception, __pyx_n_s_BaseApplication_handle_http_exce, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 145, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -11772,32 +11606,32 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 145, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":150
+  /* "blacksheep/baseapp.pyx":146
  * 
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):
  *         exception_handler = self.get_http_exception_handler(http_exception)             # <<<<<<<<<<<<<<
  *         if exception_handler:
  *             return await self._apply_exception_handler(request, http_exception, exception_handler)
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_10blacksheep_7baseapp_BaseApplication *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->get_http_exception_handler(__pyx_cur_scope->__pyx_v_self, __pyx_cur_scope->__pyx_v_http_exception); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_10blacksheep_7baseapp_BaseApplication *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->get_http_exception_handler(__pyx_cur_scope->__pyx_v_self, __pyx_cur_scope->__pyx_v_http_exception); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_exception_handler = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "blacksheep/baseapp.pyx":151
+  /* "blacksheep/baseapp.pyx":147
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):
  *         exception_handler = self.get_http_exception_handler(http_exception)
  *         if exception_handler:             # <<<<<<<<<<<<<<
  *             return await self._apply_exception_handler(request, http_exception, exception_handler)
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_exception_handler); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_exception_handler); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 147, __pyx_L1_error)
   if (__pyx_t_2) {
 
-    /* "blacksheep/baseapp.pyx":152
+    /* "blacksheep/baseapp.pyx":148
  *         exception_handler = self.get_http_exception_handler(http_exception)
  *         if exception_handler:
  *             return await self._apply_exception_handler(request, http_exception, exception_handler)             # <<<<<<<<<<<<<<
@@ -11805,7 +11639,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
  *         return await self.handle_exception(request, http_exception)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_apply_exception_handler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_apply_exception_handler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     __pyx_t_5 = 0;
@@ -11825,7 +11659,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
       PyObject *__pyx_callargs[4] = {__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_request), ((PyObject *)__pyx_cur_scope->__pyx_v_http_exception), __pyx_cur_scope->__pyx_v_exception_handler};
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 3+__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
@@ -11840,18 +11674,18 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
       __pyx_generator->resume_label = 1;
       return __pyx_r;
       __pyx_L5_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 152, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 148, __pyx_L1_error)
       __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
     } else {
       __pyx_t_1 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 152, __pyx_L1_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "blacksheep/baseapp.pyx":151
+    /* "blacksheep/baseapp.pyx":147
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):
  *         exception_handler = self.get_http_exception_handler(http_exception)
  *         if exception_handler:             # <<<<<<<<<<<<<<
@@ -11860,7 +11694,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
  */
   }
 
-  /* "blacksheep/baseapp.pyx":154
+  /* "blacksheep/baseapp.pyx":150
  *             return await self._apply_exception_handler(request, http_exception, exception_handler)
  * 
  *         return await self.handle_exception(request, http_exception)             # <<<<<<<<<<<<<<
@@ -11868,7 +11702,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
  *     async def handle_exception(self, request, exc):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_exception); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_exception); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -11888,7 +11722,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
     PyObject *__pyx_callargs[3] = {__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_request), ((PyObject *)__pyx_cur_scope->__pyx_v_http_exception)};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 2+__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
@@ -11903,11 +11737,11 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
     __pyx_generator->resume_label = 2;
     return __pyx_r;
     __pyx_L6_resume_from_await:;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 154, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 150, __pyx_L1_error)
     __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
   } else {
     __pyx_t_1 = NULL;
-    if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
+    if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_1);
@@ -11915,7 +11749,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":149
+  /* "blacksheep/baseapp.pyx":145
  *             return await self.handle_exception(request, server_ex)
  * 
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
@@ -11942,7 +11776,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_24generator9(_
 }
 static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "blacksheep/baseapp.pyx":156
+/* "blacksheep/baseapp.pyx":152
  *         return await self.handle_exception(request, http_exception)
  * 
  *     async def handle_exception(self, request, exc):             # <<<<<<<<<<<<<<
@@ -12006,7 +11840,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -12014,14 +11848,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("handle_exception", 1, 2, 2, 1); __PYX_ERR(0, 156, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("handle_exception", 1, 2, 2, 1); __PYX_ERR(0, 152, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle_exception") < 0)) __PYX_ERR(0, 156, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "handle_exception") < 0)) __PYX_ERR(0, 152, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -12034,7 +11868,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("handle_exception", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 156, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("handle_exception", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 152, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -12073,7 +11907,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_25handle_excep
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 156, __pyx_L1_error)
+    __PYX_ERR(0, 152, __pyx_L1_error)
   } else {
     __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
   }
@@ -12087,7 +11921,7 @@ static PyObject *__pyx_pf_10blacksheep_7baseapp_15BaseApplication_25handle_excep
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_exc);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_exc);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10, __pyx_codeobj__19, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle_exception, __pyx_n_s_BaseApplication_handle_exception, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 156, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10, __pyx_codeobj__19, (PyObject *) __pyx_cur_scope, __pyx_n_s_handle_exception, __pyx_n_s_BaseApplication_handle_exception, __pyx_n_s_blacksheep_baseapp); if (unlikely(!gen)) __PYX_ERR(0, 152, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -12126,33 +11960,33 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 156, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 152, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":157
+  /* "blacksheep/baseapp.pyx":153
  * 
  *     async def handle_exception(self, request, exc):
  *         exception_handler = self.get_exception_handler(exc)             # <<<<<<<<<<<<<<
  *         if exception_handler:
  *             return await self._apply_exception_handler(request, exc, exception_handler)
  */
-  if (!(likely(__Pyx_PyException_Check(__pyx_cur_scope->__pyx_v_exc))||((__pyx_cur_scope->__pyx_v_exc) == Py_None) || __Pyx_RaiseUnexpectedTypeError("Exception", __pyx_cur_scope->__pyx_v_exc))) __PYX_ERR(0, 157, __pyx_L1_error)
-  __pyx_t_1 = ((struct __pyx_vtabstruct_10blacksheep_7baseapp_BaseApplication *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->get_exception_handler(__pyx_cur_scope->__pyx_v_self, ((PyObject*)__pyx_cur_scope->__pyx_v_exc)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
+  if (!(likely(__Pyx_PyException_Check(__pyx_cur_scope->__pyx_v_exc))||((__pyx_cur_scope->__pyx_v_exc) == Py_None) || __Pyx_RaiseUnexpectedTypeError("Exception", __pyx_cur_scope->__pyx_v_exc))) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_10blacksheep_7baseapp_BaseApplication *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->get_exception_handler(__pyx_cur_scope->__pyx_v_self, ((PyObject*)__pyx_cur_scope->__pyx_v_exc)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_exception_handler = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "blacksheep/baseapp.pyx":158
+  /* "blacksheep/baseapp.pyx":154
  *     async def handle_exception(self, request, exc):
  *         exception_handler = self.get_exception_handler(exc)
  *         if exception_handler:             # <<<<<<<<<<<<<<
  *             return await self._apply_exception_handler(request, exc, exception_handler)
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_exception_handler); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_exception_handler); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 154, __pyx_L1_error)
   if (__pyx_t_2) {
 
-    /* "blacksheep/baseapp.pyx":159
+    /* "blacksheep/baseapp.pyx":155
  *         exception_handler = self.get_exception_handler(exc)
  *         if exception_handler:
  *             return await self._apply_exception_handler(request, exc, exception_handler)             # <<<<<<<<<<<<<<
@@ -12160,7 +11994,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(
  *         return await self.handle_internal_server_error(request, exc)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_apply_exception_handler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 159, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_apply_exception_handler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 155, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     __pyx_t_5 = 0;
@@ -12180,7 +12014,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(
       PyObject *__pyx_callargs[4] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_request, __pyx_cur_scope->__pyx_v_exc, __pyx_cur_scope->__pyx_v_exception_handler};
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 3+__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
@@ -12195,18 +12029,18 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(
       __pyx_generator->resume_label = 1;
       return __pyx_r;
       __pyx_L5_resume_from_await:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 159, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 155, __pyx_L1_error)
       __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
     } else {
       __pyx_t_1 = NULL;
-      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
+      if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 155, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     }
     __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "blacksheep/baseapp.pyx":158
+    /* "blacksheep/baseapp.pyx":154
  *     async def handle_exception(self, request, exc):
  *         exception_handler = self.get_exception_handler(exc)
  *         if exception_handler:             # <<<<<<<<<<<<<<
@@ -12215,13 +12049,13 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(
  */
   }
 
-  /* "blacksheep/baseapp.pyx":161
+  /* "blacksheep/baseapp.pyx":157
  *             return await self._apply_exception_handler(request, exc, exception_handler)
  * 
  *         return await self.handle_internal_server_error(request, exc)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_internal_server_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_handle_internal_server_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -12241,7 +12075,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(
     PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_request, __pyx_cur_scope->__pyx_v_exc};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 2+__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
@@ -12256,11 +12090,11 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(
     __pyx_generator->resume_label = 2;
     return __pyx_r;
     __pyx_L6_resume_from_await:;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 161, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 157, __pyx_L1_error)
     __pyx_t_1 = __pyx_sent_value; __Pyx_INCREF(__pyx_t_1);
   } else {
     __pyx_t_1 = NULL;
-    if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+    if (__Pyx_PyGen_FetchStopIterationValue(&__pyx_t_1) < 0) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_1);
@@ -12268,7 +12102,7 @@ static PyObject *__pyx_gb_10blacksheep_7baseapp_15BaseApplication_27generator10(
   goto __pyx_L0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "blacksheep/baseapp.pyx":156
+  /* "blacksheep/baseapp.pyx":152
  *         return await self.handle_exception(request, http_exception)
  * 
  *     async def handle_exception(self, request, exc):             # <<<<<<<<<<<<<<
@@ -15674,7 +15508,6 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s__22, __pyx_k__22, sizeof(__pyx_k__22), 0, 0, 1, 1},
     {&__pyx_n_s__39, __pyx_k__39, sizeof(__pyx_k__39), 0, 0, 1, 1},
     {&__pyx_n_s_app, __pyx_k_app, sizeof(__pyx_k_app), 0, 0, 1, 1},
-    {&__pyx_kp_b_application_json, __pyx_k_application_json, sizeof(__pyx_k_application_json), 0, 0, 0, 0},
     {&__pyx_n_s_apply_exception_handler, __pyx_k_apply_exception_handler, sizeof(__pyx_k_apply_exception_handler), 0, 0, 1, 1},
     {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
@@ -15686,13 +15519,11 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
     {&__pyx_n_s_common_http_exception_handler, __pyx_k_common_http_exception_handler, sizeof(__pyx_k_common_http_exception_handler), 0, 0, 1, 1},
     {&__pyx_n_s_content, __pyx_k_content, sizeof(__pyx_k_content), 0, 0, 1, 1},
-    {&__pyx_n_s_context, __pyx_k_context, sizeof(__pyx_k_context), 0, 0, 1, 1},
     {&__pyx_n_s_decode, __pyx_k_decode, sizeof(__pyx_k_decode), 0, 0, 1, 1},
     {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
     {&__pyx_n_s_dict_2, __pyx_k_dict_2, sizeof(__pyx_k_dict_2), 0, 0, 1, 1},
     {&__pyx_kp_u_disable, __pyx_k_disable, sizeof(__pyx_k_disable), 0, 1, 0, 0},
     {&__pyx_kp_u_enable, __pyx_k_enable, sizeof(__pyx_k_enable), 0, 1, 0, 0},
-    {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
     {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
     {&__pyx_n_s_exc, __pyx_k_exc, sizeof(__pyx_k_exc), 0, 0, 1, 1},
     {&__pyx_n_s_exc_info, __pyx_k_exc_info, sizeof(__pyx_k_exc_info), 0, 0, 1, 1},
@@ -15721,8 +15552,6 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_initializing, __pyx_k_initializing, sizeof(__pyx_k_initializing), 0, 0, 1, 1},
     {&__pyx_n_s_is_coroutine, __pyx_k_is_coroutine, sizeof(__pyx_k_is_coroutine), 0, 0, 1, 1},
     {&__pyx_kp_u_isenabled, __pyx_k_isenabled, sizeof(__pyx_k_isenabled), 0, 1, 0, 0},
-    {&__pyx_n_s_json, __pyx_k_json, sizeof(__pyx_k_json), 0, 0, 1, 1},
-    {&__pyx_n_u_json, __pyx_k_json, sizeof(__pyx_k_json), 0, 1, 0, 1},
     {&__pyx_n_s_log_handled_exc, __pyx_k_log_handled_exc, sizeof(__pyx_k_log_handled_exc), 0, 0, 1, 1},
     {&__pyx_n_s_log_unhandled_exc, __pyx_k_log_unhandled_exc, sizeof(__pyx_k_log_unhandled_exc), 0, 0, 1, 1},
     {&__pyx_n_s_logger, __pyx_k_logger, sizeof(__pyx_k_logger), 0, 0, 1, 1},
@@ -15774,7 +15603,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
 }
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 308, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -15811,50 +15640,50 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "blacksheep/baseapp.pyx":19
- *         return Response(http_exception.status, content=Content(b"application/json", http_exception.__context__.json().encode()))
+  /* "blacksheep/baseapp.pyx":15
  * 
+ * async def handle_bad_request(app, Request request, HTTPException http_exception):
  *     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_int_400); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_int_400); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "blacksheep/baseapp.pyx":92
+  /* "blacksheep/baseapp.pyx":88
  *         # for example, a user might return "None" from an handler
  *         # this might be ambiguous, if a programmer thinks to return None for "Not found"
  *         return response or Response(204)             # <<<<<<<<<<<<<<
  * 
  *     async def handle_request_handler_exception(self, request, exc):
  */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_int_204); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_int_204); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "blacksheep/baseapp.pyx":138
+  /* "blacksheep/baseapp.pyx":134
  *                     "An exception occurred while trying to apply a custom 500 Internal Server Error handler!"
  *                 )
  *                 return Response(500, content=TextContent('Internal Server Error'))             # <<<<<<<<<<<<<<
  *         if self.show_error_details:
  *             return self.server_error_details_handler.produce_response(request, exc)
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_int_500); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_int_500); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_u_Internal_Server_Error); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_u_Internal_Server_Error); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
 
-  /* "blacksheep/baseapp.pyx":141
+  /* "blacksheep/baseapp.pyx":137
  *         if self.show_error_details:
  *             return self.server_error_details_handler.produce_response(request, exc)
  *         return Response(500, content=TextContent("Internal server error."))             # <<<<<<<<<<<<<<
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):
  */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_u_Internal_server_error); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_u_Internal_server_error); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
 
@@ -15885,130 +15714,130 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  * async def handle_bad_request(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
- *     # supports for pydantic ValidationError with json() method
- *     if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):
+ *     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))
+ * 
  */
   __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_bad_request, 14, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 14, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":22
+  /* "blacksheep/baseapp.pyx":18
  * 
  * 
  * async def common_http_exception_handler(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
  *     return Response(http_exception.status, content=TextContent(http.HTTPStatus(http_exception.status).phrase))
  * 
  */
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_common_http_exception_handler, 22, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_common_http_exception_handler, 18, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 18, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":26
+  /* "blacksheep/baseapp.pyx":22
  * 
  * 
  * def get_logger():             # <<<<<<<<<<<<<<
  *     logger = logging.getLogger("blacksheep.server")
  *     logger.setLevel(logging.INFO)
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_n_s_logger); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_n_s_logger); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__24);
   __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_get_logger, 26, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_get_logger, 22, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 22, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":40
+  /* "blacksheep/baseapp.pyx":36
  *         self.logger = get_logger()
  * 
  *     def init_exceptions_handlers(self):             # <<<<<<<<<<<<<<
  *         return {
  *             404: handle_not_found,
  */
-  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__26);
   __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_init_exceptions_handlers, 40, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_init_exceptions_handlers, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 36, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":46
+  /* "blacksheep/baseapp.pyx":42
  *         }
  * 
  *     async def log_unhandled_exc(self, request, exc):             # <<<<<<<<<<<<<<
  *         self.logger.error(
  *             "Unhandled exception - \"%s %s\"",
  */
-  __pyx_tuple__28 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_exc); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_tuple__28 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_exc); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_log_unhandled_exc, 46, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_log_unhandled_exc, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 42, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":54
+  /* "blacksheep/baseapp.pyx":50
  *         )
  * 
  *     async def log_handled_exc(self, request, exc):             # <<<<<<<<<<<<<<
  *         if isinstance(exc, HTTPException):
  *             self.logger.info(
  */
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_log_handled_exc, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_log_handled_exc, 50, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 50, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":71
+  /* "blacksheep/baseapp.pyx":67
  *             )
  * 
  *     async def handle(self, Request request):             # <<<<<<<<<<<<<<
  *         cdef object route
  *         cdef Response response
  */
-  __pyx_tuple__29 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_route, __pyx_n_s_response, __pyx_n_s_exc); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_tuple__29 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_route, __pyx_n_s_response, __pyx_n_s_exc); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__29);
   __Pyx_GIVEREF(__pyx_tuple__29);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle, 71, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle, 67, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 67, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":94
+  /* "blacksheep/baseapp.pyx":90
  *         return response or Response(204)
  * 
  *     async def handle_request_handler_exception(self, request, exc):             # <<<<<<<<<<<<<<
  *         if isinstance(exc, HTTPException):
  *             await self.log_handled_exc(request, exc)
  */
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_request_handler_exception, 94, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_request_handler_exception, 90, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 90, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":125
+  /* "blacksheep/baseapp.pyx":121
  *         return None
  * 
  *     async def handle_internal_server_error(self, Request request, Exception exc):             # <<<<<<<<<<<<<<
  *         """
  *         Handles an unhandled exception.
  */
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_internal_server_error, 125, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_internal_server_error, 121, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 121, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":143
+  /* "blacksheep/baseapp.pyx":139
  *         return Response(500, content=TextContent("Internal server error."))
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):             # <<<<<<<<<<<<<<
  *         try:
  *             return await exception_handler(self, request, exc)
  */
-  __pyx_tuple__30 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_exc, __pyx_n_s_exception_handler, __pyx_n_s_server_ex); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_tuple__30 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_exc, __pyx_n_s_exception_handler, __pyx_n_s_server_ex); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_apply_exception_handler, 143, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_apply_exception_handler, 139, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 139, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":149
+  /* "blacksheep/baseapp.pyx":145
  *             return await self.handle_exception(request, server_ex)
  * 
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
  *         exception_handler = self.get_http_exception_handler(http_exception)
  *         if exception_handler:
  */
-  __pyx_tuple__31 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_http_exception, __pyx_n_s_exception_handler); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_tuple__31 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_http_exception, __pyx_n_s_exception_handler); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__31);
   __Pyx_GIVEREF(__pyx_tuple__31);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_http_exception, 149, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_http_exception, 145, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 145, __pyx_L1_error)
 
-  /* "blacksheep/baseapp.pyx":156
+  /* "blacksheep/baseapp.pyx":152
  *         return await self.handle_exception(request, http_exception)
  * 
  *     async def handle_exception(self, request, exc):             # <<<<<<<<<<<<<<
  *         exception_handler = self.get_exception_handler(exc)
  *         if exception_handler:
  */
-  __pyx_tuple__32 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_exc, __pyx_n_s_exception_handler); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_request, __pyx_n_s_exc, __pyx_n_s_exception_handler); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_exception, 156, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_COROUTINE, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_blacksheep_baseapp_pyx, __pyx_n_s_handle_exception, 152, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 152, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -16114,15 +15943,15 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_10blacksheep_7baseapp_BaseApplication.get_exception_handler = (PyObject *(*)(struct __pyx_obj_10blacksheep_7baseapp_BaseApplication *, PyObject *))__pyx_f_10blacksheep_7baseapp_15BaseApplication_get_exception_handler;
   __pyx_vtable_10blacksheep_7baseapp_BaseApplication.is_handled_exception = (int (*)(struct __pyx_obj_10blacksheep_7baseapp_BaseApplication *, PyObject *))__pyx_f_10blacksheep_7baseapp_15BaseApplication_is_handled_exception;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp_BaseApplication = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp_BaseApplication_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp_BaseApplication)) __PYX_ERR(0, 32, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp_BaseApplication_spec, __pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp_BaseApplication = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp_BaseApplication_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp_BaseApplication)) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp_BaseApplication_spec, __pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp_BaseApplication = &__pyx_type_10blacksheep_7baseapp_BaseApplication;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp_BaseApplication->tp_print = 0;
@@ -16132,13 +15961,13 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_ptype_10blacksheep_7baseapp_BaseApplication->tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_vtabptr_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_vtabptr_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_MergeVtables(__pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (__Pyx_MergeVtables(__pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_BaseApplication, (PyObject *) __pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_BaseApplication, (PyObject *) __pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_10blacksheep_7baseapp_BaseApplication) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   #endif
   #if CYTHON_USE_TYPE_SPECS
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct__handle_not_found = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct__handle_not_found_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct__handle_not_found)) __PYX_ERR(0, 10, __pyx_L1_error)
@@ -16179,15 +16008,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler)) __PYX_ERR(0, 22, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler)) __PYX_ERR(0, 18, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_2_common_http_exception_handler->tp_print = 0;
@@ -16198,15 +16027,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc)) __PYX_ERR(0, 46, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc)) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_3_log_unhandled_exc->tp_print = 0;
@@ -16217,15 +16046,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc)) __PYX_ERR(0, 54, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc)) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_4_log_handled_exc->tp_print = 0;
@@ -16236,15 +16065,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_5_handle_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle)) __PYX_ERR(0, 71, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_5_handle_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_5_handle_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle)) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_5_handle_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_5_handle;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_5_handle->tp_print = 0;
@@ -16255,15 +16084,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception)) __PYX_ERR(0, 94, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception)) __PYX_ERR(0, 90, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_6_handle_request_handler_exception->tp_print = 0;
@@ -16274,15 +16103,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error)) __PYX_ERR(0, 125, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error)) __PYX_ERR(0, 121, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error) < 0) __PYX_ERR(0, 121, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error) < 0) __PYX_ERR(0, 121, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_7_handle_internal_server_error->tp_print = 0;
@@ -16293,15 +16122,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler)) __PYX_ERR(0, 143, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler)) __PYX_ERR(0, 139, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler) < 0) __PYX_ERR(0, 139, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler) < 0) __PYX_ERR(0, 139, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_8__apply_exception_handler->tp_print = 0;
@@ -16312,15 +16141,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception)) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception)) __PYX_ERR(0, 145, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_9_handle_http_exception->tp_print = 0;
@@ -16331,15 +16160,15 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #endif
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception)) __PYX_ERR(0, 156, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception) < 0) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception_spec, NULL); if (unlikely(!__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception)) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception_spec, __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception) < 0) __PYX_ERR(0, 152, __pyx_L1_error)
   #else
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception = &__pyx_type_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception) < 0) __PYX_ERR(0, 156, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception) < 0) __PYX_ERR(0, 152, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_10blacksheep_7baseapp___pyx_scope_struct_10_handle_exception->tp_print = 0;
@@ -16808,152 +16637,152 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  * async def handle_bad_request(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
- *     # supports for pydantic ValidationError with json() method
- *     if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):
+ *     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))
+ * 
  */
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_4handle_bad_request, __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_handle_bad_request, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_handle_bad_request, __pyx_t_3) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "blacksheep/baseapp.pyx":22
+  /* "blacksheep/baseapp.pyx":18
  * 
  * 
  * async def common_http_exception_handler(app, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
  *     return Response(http_exception.status, content=TextContent(http.HTTPStatus(http_exception.status).phrase))
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_7common_http_exception_handler, __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_common_http_exception_handler, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_7common_http_exception_handler, __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_common_http_exception_handler, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_common_http_exception_handler, __pyx_t_3) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_common_http_exception_handler, __pyx_t_3) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "blacksheep/baseapp.pyx":26
+  /* "blacksheep/baseapp.pyx":22
  * 
  * 
  * def get_logger():             # <<<<<<<<<<<<<<
  *     logger = logging.getLogger("blacksheep.server")
  *     logger.setLevel(logging.INFO)
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_10get_logger, 0, __pyx_n_s_get_logger, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_10get_logger, 0, __pyx_n_s_get_logger, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_logger, __pyx_t_3) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_logger, __pyx_t_3) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "blacksheep/baseapp.pyx":40
+  /* "blacksheep/baseapp.pyx":36
  *         self.logger = get_logger()
  * 
  *     def init_exceptions_handlers(self):             # <<<<<<<<<<<<<<
  *         return {
  *             404: handle_not_found,
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_3init_exceptions_handlers, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_BaseApplication_init_exceptions, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_3init_exceptions_handlers, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_BaseApplication_init_exceptions, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_init_exceptions_handlers, __pyx_t_3) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_init_exceptions_handlers, __pyx_t_3) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
-  /* "blacksheep/baseapp.pyx":46
+  /* "blacksheep/baseapp.pyx":42
  *         }
  * 
  *     async def log_unhandled_exc(self, request, exc):             # <<<<<<<<<<<<<<
  *         self.logger.error(
  *             "Unhandled exception - \"%s %s\"",
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_5log_unhandled_exc, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_log_unhandled_ex, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_5log_unhandled_exc, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_log_unhandled_ex, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_log_unhandled_exc, __pyx_t_3) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_log_unhandled_exc, __pyx_t_3) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
-  /* "blacksheep/baseapp.pyx":54
+  /* "blacksheep/baseapp.pyx":50
  *         )
  * 
  *     async def log_handled_exc(self, request, exc):             # <<<<<<<<<<<<<<
  *         if isinstance(exc, HTTPException):
  *             self.logger.info(
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_8log_handled_exc, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_log_handled_exc, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_8log_handled_exc, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_log_handled_exc, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_log_handled_exc, __pyx_t_3) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_log_handled_exc, __pyx_t_3) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
-  /* "blacksheep/baseapp.pyx":71
+  /* "blacksheep/baseapp.pyx":67
  *             )
  * 
  *     async def handle(self, Request request):             # <<<<<<<<<<<<<<
  *         cdef object route
  *         cdef Response response
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_11handle, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_11handle, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle, __pyx_t_3) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle, __pyx_t_3) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
-  /* "blacksheep/baseapp.pyx":94
+  /* "blacksheep/baseapp.pyx":90
  *         return response or Response(204)
  * 
  *     async def handle_request_handler_exception(self, request, exc):             # <<<<<<<<<<<<<<
  *         if isinstance(exc, HTTPException):
  *             await self.log_handled_exc(request, exc)
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_14handle_request_handler_exception, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle_request_h, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_14handle_request_handler_exception, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle_request_h, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle_request_handler_exception, __pyx_t_3) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle_request_handler_exception, __pyx_t_3) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
-  /* "blacksheep/baseapp.pyx":125
+  /* "blacksheep/baseapp.pyx":121
  *         return None
  * 
  *     async def handle_internal_server_error(self, Request request, Exception exc):             # <<<<<<<<<<<<<<
  *         """
  *         Handles an unhandled exception.
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_17handle_internal_server_error, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle_internal, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_17handle_internal_server_error, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle_internal, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle_internal_server_error, __pyx_t_3) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle_internal_server_error, __pyx_t_3) < 0) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
-  /* "blacksheep/baseapp.pyx":143
+  /* "blacksheep/baseapp.pyx":139
  *         return Response(500, content=TextContent("Internal server error."))
  * 
  *     async def _apply_exception_handler(self, Request request, Exception exc, object exception_handler):             # <<<<<<<<<<<<<<
  *         try:
  *             return await exception_handler(self, request, exc)
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_20_apply_exception_handler, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication__apply_exception, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_20_apply_exception_handler, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication__apply_exception, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_apply_exception_handler, __pyx_t_3) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_apply_exception_handler, __pyx_t_3) < 0) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
-  /* "blacksheep/baseapp.pyx":149
+  /* "blacksheep/baseapp.pyx":145
  *             return await self.handle_exception(request, server_ex)
  * 
  *     async def handle_http_exception(self, Request request, HTTPException http_exception):             # <<<<<<<<<<<<<<
  *         exception_handler = self.get_http_exception_handler(http_exception)
  *         if exception_handler:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_23handle_http_exception, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle_http_exce, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_23handle_http_exception, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle_http_exce, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle_http_exception, __pyx_t_3) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle_http_exception, __pyx_t_3) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
-  /* "blacksheep/baseapp.pyx":156
+  /* "blacksheep/baseapp.pyx":152
  *         return await self.handle_exception(request, http_exception)
  * 
  *     async def handle_exception(self, request, exc):             # <<<<<<<<<<<<<<
  *         exception_handler = self.get_exception_handler(exc)
  *         if exception_handler:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_26handle_exception, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle_exception, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_10blacksheep_7baseapp_15BaseApplication_26handle_exception, __Pyx_CYFUNCTION_CCLASS | __Pyx_CYFUNCTION_COROUTINE, __pyx_n_s_BaseApplication_handle_exception, NULL, __pyx_n_s_blacksheep_baseapp, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle_exception, __pyx_t_3) < 0) __PYX_ERR(0, 156, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_10blacksheep_7baseapp_BaseApplication, __pyx_n_s_handle_exception, __pyx_t_3) < 0) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_10blacksheep_7baseapp_BaseApplication);
 
@@ -18017,31 +17846,6 @@ static void __Pyx_Generator_Replace_StopIteration(int in_async_gen) {
         in_async_gen ? "async generator raised StopIteration" :
         #endif
         "generator raised StopIteration");
-}
-
-/* GetAttr3 */
-static PyObject *__Pyx_GetAttr3Default(PyObject *d) {
-    __Pyx_PyThreadState_declare
-    __Pyx_PyThreadState_assign
-    if (unlikely(!__Pyx_PyErr_ExceptionMatches(PyExc_AttributeError)))
-        return NULL;
-    __Pyx_PyErr_Clear();
-    Py_INCREF(d);
-    return d;
-}
-static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *o, PyObject *n, PyObject *d) {
-    PyObject *r;
-#if CYTHON_USE_TYPE_SLOTS
-    if (likely(PyString_Check(n))) {
-        r = __Pyx_PyObject_GetAttrStrNoError(o, n);
-        if (unlikely(!r) && likely(!PyErr_Occurred())) {
-            r = __Pyx_NewRef(d);
-        }
-        return r;
-    }
-#endif
-    r = PyObject_GetAttr(o, n);
-    return (likely(r)) ? r : __Pyx_GetAttr3Default(d);
 }
 
 /* PyFunctionFastCall */
@@ -20567,6 +20371,31 @@ static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
     return value;
 }
 #endif
+
+/* GetAttr3 */
+  static PyObject *__Pyx_GetAttr3Default(PyObject *d) {
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    if (unlikely(!__Pyx_PyErr_ExceptionMatches(PyExc_AttributeError)))
+        return NULL;
+    __Pyx_PyErr_Clear();
+    Py_INCREF(d);
+    return d;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *o, PyObject *n, PyObject *d) {
+    PyObject *r;
+#if CYTHON_USE_TYPE_SLOTS
+    if (likely(PyString_Check(n))) {
+        r = __Pyx_PyObject_GetAttrStrNoError(o, n);
+        if (unlikely(!r) && likely(!PyErr_Occurred())) {
+            r = __Pyx_NewRef(d);
+        }
+        return r;
+    }
+#endif
+    r = PyObject_GetAttr(o, n);
+    return (likely(r)) ? r : __Pyx_GetAttr3Default(d);
+}
 
 /* Import */
   static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {

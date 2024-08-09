@@ -12,10 +12,6 @@ async def handle_not_found(app, Request request, HTTPException http_exception):
 
 
 async def handle_bad_request(app, Request request, HTTPException http_exception):
-    # supports for pydantic ValidationError with json() method
-    if http_exception.__context__ is not None and callable(getattr(http_exception.__context__, "json", None)):
-        return Response(http_exception.status, content=Content(b"application/json", http_exception.__context__.json().encode()))
-
     return Response(400, content=TextContent(f'Bad Request: {str(http_exception)}'))
 
 

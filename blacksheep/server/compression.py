@@ -5,7 +5,6 @@ from typing import Awaitable, Callable, Iterable, List, Optional
 
 from blacksheep import Content, Request, Response
 from blacksheep.server.application import Application
-from blacksheep.server.normalization import ensure_response
 
 
 class GzipMiddleware:
@@ -75,7 +74,7 @@ class GzipMiddleware:
             return any(_type in content_type for _type in self.handled_types)
 
         def is_handled_encoding() -> bool:
-            return b"gzip" in (request.get_first_header(b"accept-encoding") or "")
+            return b"gzip" in (request.get_first_header(b"accept-encoding") or b"")
 
         def is_handled_response_content() -> bool:
             if response is None or response.content is None:
@@ -98,7 +97,7 @@ class GzipMiddleware:
     async def __call__(
         self, request: Request, handler: Callable[[Request], Awaitable[Response]]
     ) -> Optional[Response]:
-        response = ensure_response(await handler(request))
+        response = await handler(request)
 
         if response is None or response.content is None:
             return response

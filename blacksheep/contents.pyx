@@ -1,11 +1,8 @@
-import json
 import uuid
 from collections.abc import MutableSequence
 from inspect import isasyncgenfunction
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import parse_qsl, quote_plus
-
-from blacksheep.settings.json import json_settings
 
 from .exceptions cimport MessageAborted
 
@@ -118,11 +115,6 @@ cdef class HTMLContent(Content):
     def __init__(self, str html):
         super().__init__(b'text/html; charset=utf-8', html.encode('utf8'))
 
-
-cdef class JSONContent(Content):
-
-    def __init__(self, object data, dumps=json_settings.dumps):
-        super().__init__(b'application/json', dumps(data).encode('utf8'))
 
 
 cdef dict parse_www_form_urlencoded(str content):
@@ -270,39 +262,3 @@ cpdef bytes write_multipart_form_data(MultiPartFormData data):
     contents.extend(data.boundary)
     contents.extend(b'--\r\n')
     return bytes(contents)
-
-
-cdef class ServerSentEvent:
-    """
-    Represents a single event of a Server-sent event communication, to be used
-    in a asynchronous generator.
-
-    Attributes:
-        data: An object that will be transmitted to the client, in JSON.
-        event: Optional event name.
-        id: Optional event ID to set the EventSource's last event ID value.
-        retry: The reconnection time. If the connection to the server is lost,
-               the browser will wait for the specified time before attempting
-               to reconnect.
-        comment: Optional comment.
-    """
-
-    def __init__(
-        self,
-        object data,
-        str event = None,
-        str id = None,
-        int retry = -1,
-        str comment = None,
-    ):
-        """
-        Creates an instance of ServerSentEvent
-        """
-        self.data = data
-        self.event = event
-        self.id = id
-        self.retry = retry
-        self.comment = comment
-
-    def __repr__(self):
-        return f"ServerSentEvent({self.data})"

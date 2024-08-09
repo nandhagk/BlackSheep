@@ -24,9 +24,7 @@ from rodi import ContainerProtocol
 
 from blacksheep.messages import Request, Response
 from blacksheep.normalization import copy_special_attributes
-from blacksheep.server import responses
 from blacksheep.server.routing import Route
-from blacksheep.server.sse import ServerSentEvent, ServerSentEventsResponse
 from blacksheep.server.websocket import WebSocket
 
 from .bindings import (
@@ -34,7 +32,6 @@ from .bindings import (
     BodyBinder,
     BoundValue,
     IdentityBinder,
-    JSONBinder,
     QueryBinder,
     RouteBinder,
     ServiceBinder,
@@ -112,27 +109,6 @@ def _get_method_annotations_base(method, signature: Optional[Signature] = None):
 
 
 # endregion
-
-
-def ensure_response(result) -> Response:
-    """
-    When a request handler returns a result that is not an instance of Response,
-    this method normalizes the output of the method to be either `None`. or an instance
-    of `blacksheep.messages.Response` class.
-
-    Use this method in custom decorators for request handlers.
-    """
-    if result is None:
-        # 204 No Content
-        return Response(204)
-
-    if not isinstance(result, Response):
-        # default to a plain text or JSON response
-        if isinstance(result, str):
-            return responses.text(result)
-        return responses.json(result)
-
-    return result
 
 
 class NormalizationError(Exception): ...
@@ -328,14 +304,7 @@ def _get_raw_bound_value_type(bound_type: Type[BoundValue]) -> Type[Any]:
 
 def _get_bound_value_type(bound_type: Type[BoundValue]) -> Type[Any]:
     value_type = _get_raw_bound_value_type(bound_type)
-
-    if isinstance(value_type, TypeVar):
-        # The user of the API did not specify a value type,
-        # for example:
-        #   def foo(x: FromQuery): ...
-        if hasattr(bound_type, "default_value_type"):
-            return getattr(bound_type, "default_value_type")
-        return List[str]
+    assert not isinstance(value_type, TypeVar)
 
     return value_type
 
@@ -361,9 +330,6 @@ def _get_parameter_binder(
 
     if isinstance(annotation, (str, ForwardRef)):  # pragma: no cover
         raise UnsupportedForwardRefInSignatureError(original_annotation)
-
-    if annotation in Binder.aliases:
-        return Binder.aliases[annotation](services)
 
     if (
         annotation in Binder.handlers
@@ -428,8 +394,7 @@ def _get_parameter_binder(
             annotation, name, implicit=True, required=not is_root_optional
         )
 
-    # 6. from json body (last default)
-    return JSONBinder(annotation, name, True, required=not is_root_optional)
+    raise ValueError("No matching binder.")
 
 
 def get_parameter_binder(
@@ -485,37 +450,6 @@ def get_binders_for_middleware(
     return _get_binders_for_function(method, services, None)
 
 
-def get_sync_wrapper(
-    services: ContainerProtocol,
-    route: Route,
-    method: Callable[..., Any],
-    params: Mapping[str, ParamInfo],
-    params_len: int,
-) -> Callable[[Request], Awaitable[Response]]:
-    if params_len == 0:
-        # the user defined a synchronous request handler with no input
-        async def hdlr(_):
-            return method()
-
-        return hdlr
-
-    if params_len == 1 and "request" in params:
-
-        async def hdlr(request):
-            return method(request)
-
-        return hdlr
-
-    binders = get_binders(route, services)
-
-    @wraps(method)
-    async def handler(request):
-        values = [await binder.get_parameter(request) for binder in binders]
-        return method(*values)
-
-    return handler
-
-
 def get_async_wrapper(
     services: ContainerProtocol,
     route: Route,
@@ -539,10 +473,7 @@ def get_async_wrapper(
         # There is no need to wrap the request handler if it was
         # defined as asynchronous function accepting a single request or
         # websocket parameter
-        if param_name in ("request", "websocket") or params[param_name].annotation in {
-            Request,
-            WebSocket,
-        }:
+        if params[param_name].annotation in {Request, WebSocket}:
             return method
 
     binders = get_binders(route, services)
@@ -599,38 +530,6 @@ def get_async_wrapper_for_asyncgen(
     return handler
 
 
-def _get_async_wrapper_for_output(
-    method: Callable[[Request], Any],
-) -> Callable[[Request], Awaitable[Response]]:
-    @wraps(method)
-    async def handler(request: Request) -> Response:
-        return ensure_response(await method(request))
-
-    return handler
-
-
-_STREAMING_TYPES = {ServerSentEvent: ServerSentEventsResponse}
-
-
-def register_streamed_type(object_type, response_class):
-    """
-    Registers a response class used to handle a kind of object yielded by an
-    asynchronous generator, to describe how that type should be handled.
-    """
-    _STREAMING_TYPES[object_type] = response_class
-
-
-def get_streaming_response_class(object_type):
-    """
-    Returns the kind of Response class used to handle objects of the given type, or None
-    if None is configured.
-    """
-    try:
-        return _STREAMING_TYPES[object_type]
-    except KeyError:
-        return None
-
-
 def normalize_handler(
     route: Route, services: ContainerProtocol, http_method: str = ""
 ) -> Callable[[Request], Awaitable[Response]]:
@@ -661,24 +560,8 @@ def normalize_handler(
     # normalize input
     if inspect.iscoroutinefunction(method):
         normalized = get_async_wrapper(services, route, method, params, params_len)
-    elif inspect.isasyncgenfunction(method):
-        # normalize a request handler defined as asynchronous generator yielding objects
-        # for best user experience
-        yielded_type = get_asyncgen_yield_type(method)
-
-        if yielded_type is None:
-            raise AsyncGeneratorMissingAnnotationError(method)
-
-        response_type = get_streaming_response_class(yielded_type)
-
-        if response_type is None:
-            raise AsyncGeneratorMissingResponseTypeError(method, yielded_type)
-
-        normalized = get_async_wrapper_for_asyncgen(
-            response_type, services, route, method, params, params_len
-        )
     else:
-        normalized = get_sync_wrapper(services, route, method, params, params_len)
+        raise TypeError("Sync function not allowed as handler!")
 
     # Normalize output. WebSocket handlers must be excluded here because their
     # response is not handled writing a BlackSheep Response object.
@@ -689,7 +572,6 @@ def normalize_handler(
             # this scenario enables a more accurate automatic generation of
             # OpenAPI Documentation, for responses
             setattr(route.handler, "return_type", return_type)
-        normalized = _get_async_wrapper_for_output(normalized)
 
     if normalized is not method:
         setattr(normalized, "root_fn", method)

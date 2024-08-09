@@ -4,7 +4,6 @@ from typing import Any, AnyStr, Callable, List, MutableMapping, Optional
 
 from blacksheep.messages import Request
 from blacksheep.server.asgi import get_full_path
-from blacksheep.settings.json import json_settings
 
 MAX_REASON_SIZE = 123
 
@@ -131,17 +130,6 @@ class WebSocket(Request):
         message = await self.receive()
         return message["bytes"]
 
-    async def receive_json(
-        self, mode: MessageMode = MessageMode.TEXT
-    ) -> MutableMapping[str, Any]:
-        message = await self.receive()
-
-        if mode == MessageMode.TEXT:
-            return json_settings.loads(message["text"])
-
-        if mode == MessageMode.BYTES:
-            return json_settings.loads(message["bytes"].decode())
-
     async def _send_message(self, message: MutableMapping[str, AnyStr]) -> None:
         if self.client_state != WebSocketState.CONNECTED:
             raise InvalidWebSocketStateError(
@@ -155,17 +143,6 @@ class WebSocket(Request):
 
     async def send_bytes(self, data: bytes) -> None:
         await self._send_message({"type": "websocket.send", "bytes": data})
-
-    async def send_json(
-        self, data: MutableMapping[Any, Any], mode: MessageMode = MessageMode.TEXT
-    ):
-        text = json_settings.dumps(data)
-
-        if mode == MessageMode.TEXT:
-            return await self.send_text(text)
-
-        if mode == MessageMode.BYTES:
-            return await self.send_bytes(text.encode())
 
     def _wrap_receive(self, _receive: Callable):
         @wraps(_receive)

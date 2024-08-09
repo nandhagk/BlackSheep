@@ -2,14 +2,12 @@ import asyncio
 import http
 import re
 from datetime import datetime, timedelta
-from json.decoder import JSONDecodeError
 from urllib.parse import parse_qs, quote, unquote, urlencode
 
 import charset_normalizer
 
 from blacksheep.multipart import parse_multipart
 from blacksheep.sessions import Session
-from blacksheep.settings.json import json_settings
 from blacksheep.utils.time import utcnow
 
 from .contents cimport (
@@ -251,30 +249,6 @@ cdef class Message:
             return [part for part in data if part.file_name and part.name == name]
         return [part for part in data if part.file_name]
 
-    async def json(self, loads=json_settings.loads):
-        if not self.declares_json():
-            return None
-
-        text = await self.text()
-
-        if text is None or text == "":
-            return None
-
-        try:
-            return loads(text)
-        except JSONDecodeError as decode_error:
-            content_type = self.content_type()
-            if content_type and b'json' in content_type:
-                # NB: content type could also be "application/problem+json";
-                # so we don't check for application/json in this case
-                raise BadRequestFormat(
-                    f'Declared Content-Type is {content_type.decode()} but '
-                    f'the content cannot be parsed as JSON.', decode_error
-                )
-            raise BadRequestFormat(
-                f'Cannot parse content as JSON',
-                decode_error
-            )
 
     cpdef bint has_body(self):
         cdef Content content = self.content

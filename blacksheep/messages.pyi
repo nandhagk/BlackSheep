@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Generator, List, Optional, Sequence, Union
+from typing import Dict, Generator, List, Optional, Sequence, Union
 
 from guardpost import Identity
 
@@ -7,7 +7,6 @@ from .contents import Content, FormPart
 from .cookies import Cookie
 from .headers import Headers, HeaderType
 from .sessions import Session
-from .settings import json as json_plugin
 from .url import URL
 
 class Message:
@@ -49,7 +48,6 @@ class Message:
     def declares_json(self) -> bool: ...
     def declares_xml(self) -> bool: ...
     async def files(self, name: Optional[str] = None) -> List[FormPart]: ...
-    async def json(self, loads: Callable[[str], Any] = json_plugin.loads) -> Any: ...
     def has_body(self) -> bool: ...
     @property
     def charset(self) -> str: ...

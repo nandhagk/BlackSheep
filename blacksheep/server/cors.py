@@ -7,8 +7,6 @@ from blacksheep.messages import Request, Response
 from blacksheep.server.routing import Route, Router
 from blacksheep.server.websocket import WebSocket
 
-from .responses import not_found, ok, status_code
-
 
 class CORSPolicy:
     def __init__(
@@ -204,7 +202,7 @@ class CORSStrategy:
 
 
 def _get_cors_error_response(message: str) -> Response:
-    response = status_code(400)
+    response = Response(400)
     response.add_header(b"CORS-Error", message.encode())
     return response
 
@@ -275,7 +273,7 @@ def get_cors_middleware(
         )
 
         if route is None:
-            return not_found()
+            return Response(404)
 
         policy = strategy.get_policy_by_route_or_default(route)
         allowed_methods = _get_encoded_value_for_set(policy.allow_methods)
@@ -309,7 +307,7 @@ def get_cors_middleware(
                     if str_value.lower() not in policy.allow_headers:
                         return _get_invalid_header_response(str_value)
 
-            response = ok()
+            response = Response(200)
             _set_cors_origin(response, origin_response)
             response.set_header(b"Access-Control-Allow-Methods", allowed_methods)
 

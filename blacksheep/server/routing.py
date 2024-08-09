@@ -840,45 +840,6 @@ class RegisteredRoute:
         self.handler = handler
 
 
-class RoutesRegistry(RouterBase):
-    """
-    A registry for routes: not a full router able to get matches.
-    Unlike a router, a registry does not throw for duplicated routes;
-    because such routes can be modified when applied to an actual router.
-
-    This class is meant to enable scenarios like base pattern for controllers.
-    """
-
-    __slots__ = ("routes", "_filters")
-
-    def __init__(
-        self,
-        *,
-        host: Optional[str] = None,
-        headers: Optional[HeadersType] = None,
-        params: Optional[ParamsType] = None,
-        filters: Optional[List[RouteFilter]] = None,
-    ):
-        super().__init__(host=host, headers=headers, params=params, filters=filters)
-        self.routes: List[RegisteredRoute] = []
-
-    def reset(self):
-        """Resets this routes registry to its initial state."""
-        self.routes = []
-
-    def __iter__(self):
-        yield from self.routes
-
-    def add(
-        self,
-        method: str,
-        pattern: str,
-        handler: Callable,
-    ):
-        self.mark_handler(handler)
-        self.routes.append(RegisteredRoute(method, pattern, handler))
-
-
 class MountRegistry:
     """
     Holds information about mounted applications and how they should be handled.

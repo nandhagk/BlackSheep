@@ -162,7 +162,7 @@ class Application(BaseApplication):
     Server application class.
     """
 
-    def __init__(self, *, base_path: str):
+    def __init__(self):
         router = default_router
         services = Container()
         mount = MountRegistry()
@@ -184,7 +184,6 @@ class Application(BaseApplication):
         self.files_handler = FilesHandler()
         self.server_error_details_handler = ServerErrorDetailsHandler()
         self._session_middleware: Optional[SessionMiddleware] = None
-        self.base_path: str = base_path
         self.mount_registry = mount
 
         validate_router(self)

@@ -163,19 +163,6 @@ class FromServices(BoundValue[T]):
     """
 
 
-class FromJSON(BoundValue[T]):
-    """
-    A parameter obtained from JSON request body.
-    If value type is `dict`, `typing.Dict`, or not specified, the deserialized JSON
-    is returned without any cast.
-    """
-
-    default_value_type = dict
-
-
-FromJson = FromJSON  # for backward compatibility
-
-
 class FromText(BoundValue[str]):
     """
     A parameter obtained from the request body as plain text.
@@ -528,25 +515,6 @@ class BodyBinder(Binder):
             return self.converter(data)
         except ValueError as value_error:
             raise InvalidRequestBody(str(value_error)) from value_error
-
-
-class JSONBinder(BodyBinder):
-    """Extracts a model from JSON content"""
-
-    handle = FromJSON
-
-    @property
-    def content_type(self) -> str:
-        return "application/json"
-
-    def matches_content_type(self, request: Request) -> bool:
-        return request.declares_json()
-
-    async def read_data(self, request: Request) -> Any:
-        return await request.json()
-
-
-JsonBinder = JSONBinder
 
 
 class FormBinder(BodyBinder):

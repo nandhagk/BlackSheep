@@ -8,7 +8,6 @@ from itsdangerous.exc import BadSignature, SignatureExpired
 
 from blacksheep.cookies import Cookie
 from blacksheep.messages import Request, Response
-from blacksheep.settings.json import json_settings
 from blacksheep.utils import ensure_str
 
 
@@ -82,26 +81,18 @@ class SessionSerializer(ABC):
         """Creates the string representation of a session."""
 
 
-class JSONSerializer(SessionSerializer):
-    def read(self, value: str) -> Session:
-        return Session(json_settings.loads(value))
-
-    def write(self, session: Session) -> str:
-        return json_settings.dumps(session.to_dict())
-
-
 class SessionMiddleware:
     def __init__(
         self,
         secret_key: str,
         *,
         session_cookie: str = "session",
-        serializer: Optional[SessionSerializer] = None,
+        serializer: SessionSerializer,
         signer: Optional[Serializer] = None,
         session_max_age: Optional[int] = None,
     ) -> None:
         self._signer = signer or URLSafeTimedSerializer(secret_key)
-        self._serializer = serializer or JSONSerializer()
+        self._serializer = serializer
         self._session_cookie = session_cookie
         self._logger = get_logger()
         if session_max_age is not None and session_max_age < 1:
