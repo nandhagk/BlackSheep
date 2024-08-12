@@ -25,10 +25,10 @@ keywords = ["blacksheep", "web framework", "asyncio"]
 dependencies = [
     "httptools>=0.5",
     "certifi>=2022.9.24",
-    "charset-normalizer~=3.1.0",
+    "charset-normalizer>=3.1.0",
     "guardpost>=1.0.2",
-    "rodi~=2.0.2",
-    "itsdangerous~=2.1.2",
+    "rodi>=2.0.2",
+    "itsdangerous>=2.1.2",
 ]
 
 [tool.setuptools]

@@ -57,15 +57,6 @@ class BinderAlreadyDefinedException(BindingException):
         )
 
 
-class NameAliasAlreadyDefinedException(BindingException):
-    def __init__(self, alias: str, overriding_class_name: str) -> None:
-        super().__init__(
-            f"There is already a name alias defined for '{alias}', "
-            f"the second type is: {overriding_class_name}"
-        )
-        self.alias = alias
-
-
 class TypeAliasAlreadyDefinedException(BindingException):
     def __init__(self, alias: Any, overriding_class_name: str) -> None:
         super().__init__(
@@ -91,13 +82,7 @@ class BinderMeta(type):
     def __init__(cls, name, bases, attr_dict):
         super().__init__(name, bases, attr_dict)
         handle = getattr(cls, "handle", None)
-        name_alias = getattr(cls, "name_alias", None)
         type_alias = getattr(cls, "type_alias", None)
-
-        if name_alias:
-            if name_alias in cls.aliases:
-                raise NameAliasAlreadyDefinedException(name_alias, name)
-            cls.aliases[name_alias] = cls.from_alias  # type: ignore
 
         if type_alias:
             if type_alias in cls.aliases:
@@ -234,7 +219,6 @@ def _implicit_default(obj: "Binder"):
 
 class Binder(metaclass=BinderMeta):  # type: ignore
     handle: ClassVar[Type[Any]]
-    name_alias: ClassVar[str] = ""
     type_alias: ClassVar[Any] = None
 
     def __init__(
@@ -767,7 +751,6 @@ class ServiceBinder(Binder):
 
 
 class RequestBinder(Binder):
-    name_alias = "request"
     type_alias = Request
 
     def __init__(self, implicit: bool = True):
@@ -778,7 +761,6 @@ class RequestBinder(Binder):
 
 
 class WebSocketBinder(Binder):
-    name_alias = "websocket"
     type_alias = WebSocket
 
     def __init__(self, implicit: bool = True):
@@ -805,8 +787,6 @@ class ExactBinder(Binder):
 
 
 class ServicesBinder(ExactBinder):
-    name_alias = "services"
-
     @classmethod
     def from_alias(cls, services: ContainerProtocol) -> "ServicesBinder":
         return cls(services)

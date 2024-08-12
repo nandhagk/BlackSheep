@@ -1,5 +1,5 @@
 import inspect
-from functools import partial, wraps
+from functools import wraps
 from inspect import Signature, _empty, _ParameterKind  # type: ignore
 from typing import (
     Any,
@@ -124,37 +124,6 @@ class UnsupportedSignatureError(NormalizationError):
         )
 
 
-class AsyncGeneratorMissingAnnotationError(NormalizationError):
-    """
-    Exception raised when a request handler is defined as async generator but is not
-    annotated with return type information.
-    """
-
-    def __init__(self, method) -> None:
-        super().__init__(
-            f"Cannot normalize the method `{method.__qualname__}` because it "
-            "is defined as asynchronous generator but its return type is not "
-            "specified. To resolve, add a return type annotation like AsyncIterable[T] "
-            "and ensure the type is configured using the register_streamed_type "
-            "function."
-        )
-
-
-class AsyncGeneratorMissingResponseTypeError(NormalizationError):
-    """
-    Exception raised when a request handler is defined as async generator but there is
-    no Response type configured to handle the type it yields.
-    """
-
-    def __init__(self, method, yielded_type) -> None:
-        super().__init__(
-            f"Cannot normalize the method `{method.__qualname__}` because there "
-            f"is no Response type configured to handle its yield type {yielded_type}. "
-            "To resolve, configure the response type using the register_streamed_type "
-            "function."
-        )
-
-
 class UnsupportedForwardRefInSignatureError(NormalizationError):
     def __init__(self, unsupported_type):
         super().__init__(  # pragma: no cover
@@ -210,24 +179,16 @@ _types_handled_with_query = {
     List[UUID],
     Set[UUID],
     Tuple[UUID],
+    list[str],
+    list[int],
+    list[float],
+    list[bool],
+    list[UUID],
+    tuple[str],
+    tuple[int],
+    tuple[float],
+    tuple[bool],
 }
-
-try:
-    # Note: try catch here is to support Python 3.8
-    # it can be removed when support for Python 3.8 is dropped
-    _types_handled_with_query |= {
-        list[str],
-        list[int],
-        list[float],
-        list[bool],
-        list[UUID],
-        tuple[str],
-        tuple[int],
-        tuple[float],
-        tuple[bool],
-    }
-except TypeError:
-    pass
 
 
 def _check_union(
@@ -390,6 +351,7 @@ def _get_parameter_binder(
             annotation, name, implicit=True, required=not is_root_optional
         )
 
+    print(parameter, services, route, method)
     raise ValueError("No matching binder.")
 
 
@@ -456,13 +418,6 @@ def get_async_wrapper(
     """
     Returns an asynchronous wrapper for awaitable request handlers that return objects.
     """
-    if params_len == 0:
-        # the user defined a request handler with no input
-        @wraps(method)
-        async def handler(_):  # type: ignore
-            return await method()
-
-        return handler
 
     if params_len == 1:
         param_name = list(params)[0]
@@ -475,53 +430,9 @@ def get_async_wrapper(
     binders = get_binders(route, services)
 
     @wraps(method)
-    async def handler(request):
+    async def handler(request: Request) -> Response:  # type: ignore
         values = [await binder.get_parameter(request) for binder in binders]
         return await method(*values)
-
-    return handler
-
-
-def get_async_wrapper_for_asyncgen(
-    response_type: Any,
-    services: ContainerProtocol,
-    route: Route,
-    method: Callable[..., Any],
-    params: Mapping[str, ParamInfo],
-    params_len: int,
-) -> Callable[[Request], Awaitable[Response]]:
-    """
-    Returns an asynchronous wrapper for a request handler defined as asynchronous
-    generator yielding objects. This function must be called with the right
-    response_type argument, able to handle objects yielded by the method.
-    """
-    if params_len == 0:
-        # the user defined a request handler with no input
-        # this should almost never happen as the user should handle
-        # request.is_disconnected() for a streaming response
-        @wraps(method)
-        async def handler(_) -> Response:  # type: ignore
-            return response_type(method)
-
-        return handler
-
-    if params_len == 1:
-        param_name = list(params)[0]
-        # In this case, we
-        if param_name == "request" or params[param_name].annotation is Request:
-
-            @wraps(method)
-            async def normal_sse_handler(request) -> Response:
-                return response_type(partial(method, request))
-
-            return normal_sse_handler
-
-    binders = get_binders(route, services)
-
-    @wraps(method)
-    async def handler(request):
-        values = [await binder.get_parameter(request) for binder in binders]
-        return response_type(partial(method, *values))
 
     return handler
 
@@ -543,7 +454,6 @@ def normalize_handler(
 
     sig = Signature.from_callable(method)
     params = _get_method_annotations_base(method, sig)
-    params_len = len(params)
 
     if any(
         str(param).startswith("*") or param.kind.value == _ParameterKind.KEYWORD_ONLY
@@ -551,23 +461,11 @@ def normalize_handler(
     ):
         raise UnsupportedSignatureError(method)
 
-    return_type = sig.return_annotation
-
     # normalize input
-    if inspect.iscoroutinefunction(method):
-        normalized = get_async_wrapper(services, route, method, params, params_len)
-    else:
-        raise TypeError("Sync function not allowed as handler!")
+    if not inspect.iscoroutinefunction(method):
+        raise TypeError("Only async function allowed as handler!")
 
-    # Normalize output. WebSocket handlers must be excluded here because their
-    # response is not handled writing a BlackSheep Response object.
-    if (
-        return_type is _empty or return_type is not Response
-    ) and http_method != "GET_WS":
-        if return_type is not _empty:
-            # this scenario enables a more accurate automatic generation of
-            # OpenAPI Documentation, for responses
-            setattr(route.handler, "return_type", return_type)
+    normalized = get_async_wrapper(services, route, method, params, len(params))
 
     if normalized is not method:
         setattr(normalized, "root_fn", method)
@@ -629,33 +527,3 @@ def normalize_middleware(
         return middleware
 
     return _get_middleware_async_binder(middleware, services)
-
-
-def get_asyncgen_yield_type(fn) -> Any:
-    """
-    Returns the yield type T for an asynchronous generator with a return type annotation
-    of AsyncIterable[T].
-
-    async def example(data: str) -> AsyncIterable[int]:
-        ...
-
-    get_asyncgen_yield_type(example)
-    int
-    """
-    if not inspect.isasyncgenfunction(fn):
-        raise ValueError("The given function is not an async generator.")
-
-    signature = Signature.from_callable(fn)
-    return_annotation = signature.return_annotation
-
-    origin = getattr(return_annotation, "__origin__", None)
-
-    if origin is None:
-        return None
-
-    args = getattr(return_annotation, "__args__", None)
-
-    if args is not None and len(args) >= 1:
-        return args[0]
-
-    return None
